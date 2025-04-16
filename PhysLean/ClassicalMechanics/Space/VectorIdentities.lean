@@ -135,7 +135,7 @@ lemma differentiable_fderiv_coord (f : Space → EuclideanSpace ℝ (Fin 3)) (hf
     exact hf
 
 /-- Second derivatives on space distiribute coordinate-wise over subtraction. -/
-lemma deriv_coord_2nd_sub (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 f):
+lemma deriv_coord_2nd_sub (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 f) :
     ∂[u] ((fun x => ∂[v] (fun x => f x w) x - ∂[w]  (fun x => f x v) x)) =
     (∂[u] (∂[v] (fun x => f x w))) - (∂[u] (∂[w] (fun x => f x v))) := by
   unfold deriv
@@ -181,7 +181,7 @@ lemma div_of_curl_eq_zero (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
 -/
 
 lemma grad_add (f1 f2 : Space d → ℝ)
-    (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2):
+    (hf1 : Differentiable ℝ f1) (hf2 : Differentiable ℝ f2) :
     ∇ (f1 + f2) = ∇ f1 + ∇ f2 := by
   unfold grad
   ext x i

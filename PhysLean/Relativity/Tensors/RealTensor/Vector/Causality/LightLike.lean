@@ -35,12 +35,6 @@ lemma causalCharacter_zero {d : ℕ} : causalCharacter (0 : Vector d) =
     CausalCharacter.lightLike := by
   simp [causalCharacter, lightLike_iff_norm_sq_zero]
 
-/-- Causally preceding is reflexive -/
-@[simp]
-lemma causallyPrecedes_refl {d : ℕ} (p : Vector d) : causallyPrecedes p p := by
-  right
-  simp [pastLightConeBoundary]
-
 /-- For two lightlike vectors with equal time components, their spatial parts
     have equal Euclidean norms -/
 lemma lightlike_eq_spatial_norm_of_eq_time {d : ℕ} {v w : Vector d}

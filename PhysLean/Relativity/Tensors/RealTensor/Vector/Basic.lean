@@ -303,8 +303,12 @@ abbrev spatialPart {d : ℕ} (v : Vector d) : EuclideanSpace ℝ (Fin d) :=
   fun i => v (Sum.inr i)
 
 /-- Extract time component from a Lorentz vector -/
-abbrev timeComponent {d : ℕ} (v : Vector d) : ℝ :=
-  v (Sum.inl 0)
+def timeComponent {d : ℕ} : Vector d →ₗ[ℝ] ℝ where
+  toFun v := v (Sum.inl 0)
+  map_add' v1 v2 := by
+    simp
+  map_smul' c v := by
+    simp
 
 end Vector
 

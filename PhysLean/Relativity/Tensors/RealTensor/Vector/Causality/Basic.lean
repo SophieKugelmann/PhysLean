@@ -75,14 +75,14 @@ lemma neg_causalCharacter_eq_self {d : ℕ} (p : Vector d) :
 - `causalCharacter (q - p)` is `timeLike` and
 - `(q - p) (Sum.inl 0)` is positive. -/
 def interiorFutureLightCone {d : ℕ} (p : Vector d) : Set (Vector d) :=
-    {q | causalCharacter (q - p) = .timeLike ∧ 0 < (q - p) (Sum.inl 0)}
+    {q | causalCharacter (q - p) = .timeLike ∧ 0 < timeComponent (q - p)}
 
 /-- The backward light cone of a Lorentz vector `p` is defined as those
   vectors `q` such that
 - `causalCharacter (q - p)` is `timeLike` and
 - `(q - p) (Sum.inl 0)` is negative. -/
 def interiorPastLightCone {d : ℕ} (p : Vector d) : Set (Vector d) :=
-    {q | causalCharacter (q - p) = .timeLike ∧ (q - p) (Sum.inl 0) < 0}
+    {q | causalCharacter (q - p) = .timeLike ∧ timeComponent (q - p) < 0}
 
 /-- The light cone boundary (null surface) of a spacetime point `p`. -/
 def lightConeBoundary {d : ℕ} (p : Vector d) : Set (Vector d) :=
@@ -90,11 +90,11 @@ def lightConeBoundary {d : ℕ} (p : Vector d) : Set (Vector d) :=
 
 /-- The future light cone boundary (null surface) of a spacetime point `p`. -/
 def futureLightConeBoundary {d : ℕ} (p : Vector d) : Set (Vector d) :=
-  {q | causalCharacter (q - p) = .lightLike ∧ 0 ≤ (q - p) (Sum.inl 0)}
+  {q | causalCharacter (q - p) = .lightLike ∧ 0 < timeComponent (q - p)}
 
 /-- The past light cone boundary (null surface) of a spacetime point `p`. -/
 def pastLightConeBoundary {d : ℕ} (p : Vector d) : Set (Vector d) :=
-  {q | causalCharacter (q - p) = .lightLike ∧ (q - p) (Sum.inl 0) ≤ 0}
+  {q | causalCharacter (q - p) = .lightLike ∧ timeComponent (q - p) < 0}
 
 /-- Any point `p` lies on its own light cone boundary, as `p - p = 0` has
     zero Minkowski norm squared. -/

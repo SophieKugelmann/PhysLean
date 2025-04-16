@@ -90,9 +90,10 @@ def example1 : InstantaneousTwinParadox where
     | Sum.inr 0 => 6
     | Sum.inr i => 0)
   endPoint_causallyFollows_startPoint := by
-    simp [causallyFollows]
+    simp [causallyFollows, timeComponent]
     left
-    simp only [interiorFutureLightCone, sub_zero, Fin.isValue, Set.mem_setOf_eq,
+    simp only [interiorFutureLightCone, sub_zero, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one,
+      Nat.reduceAdd, timeComponent, Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk, Set.mem_setOf_eq,
       LinearEquiv.apply_symm_apply, Nat.ofNat_pos, and_true]
     refine (timeLike_iff_norm_sq_pos _).mpr ?_
     rw [innerProduct_toCoord]
@@ -101,7 +102,7 @@ def example1 : InstantaneousTwinParadox where
     simp only [causallyFollows]
     left
     simp only [interiorFutureLightCone, sub_zero, Fin.isValue, Set.mem_setOf_eq,
-      LinearEquiv.apply_symm_apply]
+      LinearEquiv.apply_symm_apply, timeComponent]
     norm_num
     refine (timeLike_iff_norm_sq_pos _).mpr ?_
     rw [innerProduct_toCoord]
@@ -110,7 +111,9 @@ def example1 : InstantaneousTwinParadox where
   endPoint_causallyFollows_twinBMid := by
     simp [causallyFollows]
     left
-    simp [interiorFutureLightCone]
+    simp only [interiorFutureLightCone, realLorentzTensor.C_eq_color, Nat.succ_eq_add_one,
+      Nat.reduceAdd, timeComponent, Fin.isValue, LinearMap.coe_mk, AddHom.coe_mk, map_sub,
+      LinearEquiv.apply_symm_apply, Pi.sub_apply, sub_pos, Set.mem_setOf_eq]
     norm_num
     refine (timeLike_iff_norm_sq_pos _).mpr ?_
     rw [innerProduct_toCoord]
