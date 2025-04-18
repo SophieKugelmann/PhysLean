@@ -1,3 +1,9 @@
+/-
+Copyright (c) 2025 Matteo Cipollina. All rights reserved. -- Adjusted year
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Matteo Cipollina
+-/
+
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
 import Mathlib.LinearAlgebra.BilinearForm.Properties
@@ -62,10 +68,11 @@ def ContinuousLinearMap.toBilinForm
     (fun a v w => (f v).map_smul a w)
 
 -- We use Real-like fields for InnerProductSpace in Riemannian Metric
-variable {𝕜 : Type u} [RCLike 𝕜] -- Stronger assumption for InnerProductSpace, implies NontriviallyNormedField
-variable {E : Type v} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E] -- Requires finite dimension on the model space
+variable {𝕜 : Type u} [RCLike 𝕜] -- Stronger assumption, implies NontriviallyNormedField
+variable {E : Type v} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E]
 variable {H : Type w} [TopologicalSpace H] -- Chart space
-variable {M : Type w} [TopologicalSpace M] [ChartedSpace H M] [ChartedSpace H E] -- Manifold M and ChartedSpace for E
+-- Manifold M and ChartedSpace for E
+variable {M : Type w} [TopologicalSpace M] [ChartedSpace H M] [ChartedSpace H E]
 variable {I : ModelWithCorners 𝕜 E H} {n : WithTop ℕ∞} -- Model with corners and smoothness level
 
 /-- A pseudo-Riemannian metric of smoothness class `C^n` on a manifold `M` modelled on `(E, H)`
@@ -81,16 +88,18 @@ structure PseudoRiemannianMetric
     [FiberBundle E (TangentSpace I : M → Type _)]
     [VectorBundle 𝕜 E (TangentSpace I : M → Type _)]
     [IsManifold I (n + 1) M] -- Manifold is C^{n+1}
-    [ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I] -- Tangent bundle is C^n
-   : Type (max u v w) where
+    [ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I] : -- Tangent bundle is C^n
+    Type (max u v w) where
   /-- The metric tensor at each point `x : M`, represented as a continuous linear map
       `TₓM →L[𝕜] (TₓM →L[𝕜] 𝕜)`. Applying it twice, `(val x v) w`, yields `gₓ(v, w)`. -/
   protected val : ∀ (x : M), TangentSpace I x →L[𝕜] (TangentSpace I x →L[𝕜] 𝕜)
   /-- The metric is symmetric: `gₓ(v, w) = gₓ(w, v)`. -/
   protected symm : ∀ (x : M) (v w : TangentSpace I x), (val x v) w = (val x w) v
   /-- The metric is non-degenerate: if `gₓ(v, w) = 0` for all `w`, then `v = 0`. -/
-  protected nondegenerate : ∀ (x : M) (v : TangentSpace I x), (∀ w : TangentSpace I x, (val x v) w = 0) → v = 0
-  /-- The metric varies smoothly: `x ↦ gₓ(Xₓ, Yₓ)` is a `C^n` function for `C^n` vector fields `X, Y`. -/
+  protected nondegenerate : ∀ (x : M) (v : TangentSpace I x), (∀ w : TangentSpace I x,
+    (val x v) w = 0) → v = 0
+  /-- The metric varies smoothly: `x ↦ gₓ(Xₓ, Yₓ)` is a `C^n` function for `C^n`
+      vector fields `X, Y`. -/
   protected smooth : ∀ (X Y : ContMDiffSection I E n (TangentSpace I)),
     ContMDiff I (modelWithCornersSelf 𝕜 𝕜) n (fun x => val x (X x) (Y x))
 
@@ -291,14 +300,17 @@ omit [FiniteDimensional 𝕜 E] [ChartedSpace H E] in
   exact h
 
 omit [ChartedSpace H E] in
-/-- The continuous linear map `flatL` is surjective because the tangent space is finite dimensional. -/
+/-- The continuous linear map `flatL` is surjective because the tangent space is
+    finite dimensional. -/
 @[simp] lemma flatL_surj
     (g : PseudoRiemannianMetric I n) (x : M) :
     Function.Surjective (g.flatL x) := by
   haveI : FiniteDimensional 𝕜 (TangentSpace I x) := TangentSpace.finiteDimensional x
   have h_finrank_eq : finrank 𝕜 (TangentSpace I x) = finrank 𝕜 (TangentSpace I x →L[𝕜] 𝕜) := by
-    have h_dual_eq : finrank 𝕜 (TangentSpace I x →L[𝕜] 𝕜) = finrank 𝕜 (Module.Dual 𝕜 (TangentSpace I x)) := by
-      let to_dual : (TangentSpace I x →L[𝕜] 𝕜) → Module.Dual 𝕜 (TangentSpace I x) := fun f => f.toLinearMap
+    have h_dual_eq : finrank 𝕜 (TangentSpace I x →L[𝕜] 𝕜) = finrank 𝕜 (Module.Dual 𝕜
+    (TangentSpace I x)) := by
+      let to_dual : (TangentSpace I x →L[𝕜] 𝕜) → Module.Dual 𝕜 (TangentSpace I x) :=
+        fun f => f.toLinearMap
       let from_dual : Module.Dual 𝕜 (TangentSpace I x) → (TangentSpace I x →L[𝕜] 𝕜) := fun f =>
         ContinuousLinearMap.mk f (by
           apply LinearMap.continuous_of_finiteDimensional)
@@ -339,8 +351,8 @@ omit [ChartedSpace H E] in
     (g : PseudoRiemannianMetric I n) (x : M) (v w : TangentSpace I x) :
     (g.flatEquiv x v) w = g.val x v w := rfl
 
-/-- The "musical" isomorphism (index raising) from the dual of the tangent space to the tangent space,
-    induced by a pseudo-Riemannian metric. This is the inverse of `flatEquiv`. -/
+/-- The "musical" isomorphism (index raising) from the dual of the tangent space to the
+    tangent space, induced by a pseudo-Riemannian metric. This is the inverse of `flatEquiv`. -/
 def sharpEquiv
     (g : @PseudoRiemannianMetric 𝕜 _ E _ _ H _ M _ _ I n inst_top
          inst_fib inst_vec inst_mani inst_cmvb) (x : M) :
@@ -356,7 +368,7 @@ def sharpL
 
 omit [ChartedSpace H E] in
 lemma sharpL_eq_toContinuousLinearMap
-  (g : PseudoRiemannianMetric I n) (x : M) :
+    (g : PseudoRiemannianMetric I n) (x : M) :
   g.sharpL x = (g.sharpEquiv x).toContinuousLinearMap := rfl
 
 omit [ChartedSpace H E] in
@@ -367,7 +379,7 @@ lemma coe_sharpEquiv
 /-- The index raising map `sharp` as a linear map. -/
 noncomputable def sharp
     (g : @PseudoRiemannianMetric 𝕜 _ E _ _ H _ M _ _ I n inst_top
-         inst_fib inst_vec inst_mani inst_cmvb) (x : M) :
+    inst_fib inst_vec inst_mani inst_cmvb) (x : M) :
     (TangentSpace I x →L[𝕜] 𝕜) →ₗ[𝕜] TangentSpace I x :=
   (g.sharpEquiv x).toLinearEquiv.toLinearMap
 
