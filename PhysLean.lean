@@ -15,6 +15,7 @@ import PhysLean.Mathematics.LinearMaps
 import PhysLean.Mathematics.List
 import PhysLean.Mathematics.List.InsertIdx
 import PhysLean.Mathematics.List.InsertionSort
+import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import PhysLean.Mathematics.PiTensorProduct
 import PhysLean.Mathematics.RatComplexNum
 import PhysLean.Mathematics.SO3.Basic
