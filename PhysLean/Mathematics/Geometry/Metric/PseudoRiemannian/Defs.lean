@@ -88,8 +88,8 @@ structure PseudoRiemannianMetric
     [FiberBundle E (TangentSpace I : M → Type _)]
     [VectorBundle 𝕜 E (TangentSpace I : M → Type _)]
     [IsManifold I (n + 1) M] -- Manifold is C^{n+1}
-    [ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I] : -- Tangent bundle is C^n
-    Type (max u v w) where
+    -- Tangent bundle is C^n
+    [ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I] : Type (max u v w) where
   /-- The metric tensor at each point `x : M`, represented as a continuous linear map
       `TₓM →L[𝕜] (TₓM →L[𝕜] 𝕜)`. Applying it twice, `(val x v) w`, yields `gₓ(v, w)`. -/
   protected val : ∀ (x : M), TangentSpace I x →L[𝕜] (TangentSpace I x →L[𝕜] 𝕜)
