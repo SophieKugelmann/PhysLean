@@ -73,11 +73,13 @@ lemma Pi.basisFun_apply_same {𝕜 ι : Type*} [Field 𝕜] [Fintype ι] [Decida
   simp only [Pi.basisFun_apply, Pi.single_eq_same]
 
 /-- The i-th standard basis vector has 0 in all positions j ≠ i. -/
-lemma Pi.basisFun_apply_ne {𝕜 ι : Type*} [Field 𝕜] [Fintype ι] [DecidableEq ι] (i j : ι) (h : j ≠ i) :
+lemma Pi.basisFun_apply_ne {𝕜 ι : Type*} [Field 𝕜] [Fintype ι] [DecidableEq ι] (i j : ι)
+  (h : j ≠ i) :
   (Pi.basisFun 𝕜 ι) i j = 0 := by
   simp only [Pi.basisFun_apply, Pi.single_eq_of_ne h]
 
-/-- For a standard basis vector in a weighted sum of squares, only one term in the sum is nonzero. -/
+/-- For a standard basis vector in a weighted sum of squares, only one term in the sum
+    is nonzero. -/
 lemma QuadraticMap.weightedSumSquares_basis_vector {E : Type*} [AddCommGroup E]
     [Module ℝ E] {weights : Fin (finrank ℝ E) → ℝ}
     {i : Fin (finrank ℝ E)} (v : Fin (finrank ℝ E) → ℝ)
@@ -143,7 +145,8 @@ theorem rankNeg_eq_zero {E : Type*} [AddCommGroup E]
   unfold QuadraticForm.negDim
   have h_exists := equivalent_signType_weighted_sum_squared q
   let w := Classical.choose h_exists
-  have h_equiv : QuadraticMap.Equivalent q (QuadraticMap.weightedSumSquares ℝ fun i => (w i : ℝ)) :=
+  have h_equiv : QuadraticMap.Equivalent q
+      (QuadraticMap.weightedSumSquares ℝ fun i => (w i : ℝ)) :=
     Classical.choose_spec h_exists
   have h_no_neg : ∀ i, w i ≠ SignType.neg :=
     QuadraticForm.posDef_no_neg_weights hq h_equiv
@@ -242,7 +245,8 @@ instance TangentSpace.finiteDimensional (x : M) : FiniteDimensional ℝ (Tangent
 
 /-- Convert the metric's continuous linear map representation `val x` to the algebraic
     `LinearMap.BilinForm`. -/
-def toBilinForm (g : PseudoRiemannianMetric E H M n I) (x : M) : LinearMap.BilinForm ℝ (TangentSpace I x) where
+def toBilinForm (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    LinearMap.BilinForm ℝ (TangentSpace I x) where
   toFun := λ v => { toFun := λ w => g.val x v w,
                     map_add' := λ w₁ w₂ => by
                       simp only [ContinuousLinearMap.map_add, ContinuousLinearMap.add_apply],
@@ -257,7 +261,8 @@ def toBilinForm (g : PseudoRiemannianMetric E H M n I) (x : M) : LinearMap.Bilin
       RingHom.id_apply, LinearMap.smul_apply]
 
 /-- Convert a pseudo-Riemannian metric at a point `x` to a quadratic form `v ↦ gₓ(v, v)`. -/
-def toQuadraticForm (g : PseudoRiemannianMetric E H M n I) (x : M) : QuadraticForm ℝ (TangentSpace I x) :=
+def toQuadraticForm (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    QuadraticForm ℝ (TangentSpace I x) :=
   PseudoRiemannianMetricValToQuadraticForm g.val g.symm x
 
 -- Coercion from PseudoRiemannianMetric to its function representation.
@@ -265,22 +270,27 @@ instance coeFunInst : CoeFun (PseudoRiemannianMetric E H M n I)
         (fun _ => ∀ x : M, TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)) where
    coe g := g.val
 
-@[simp] lemma toBilinForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M) (v w : TangentSpace I x) :
+@[simp] lemma toBilinForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M)
+    (v w : TangentSpace I x) :
   toBilinForm g x v w = g.val x v w := rfl
 
-@[simp] lemma toQuadraticForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x) :
+@[simp] lemma toQuadraticForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M)
+    (v : TangentSpace I x) :
   toQuadraticForm g x v = g.val x v v := rfl
 
-@[simp] lemma toBilinForm_isSymm (g : PseudoRiemannianMetric E H M n I) (x : M) : (toBilinForm g x).IsSymm := by
+@[simp] lemma toBilinForm_isSymm (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (toBilinForm g x).IsSymm := by
   intro v w; simp only [toBilinForm_apply]; exact g.symm x v w
 
-@[simp] lemma toBilinForm_nondegenerate (g : PseudoRiemannianMetric E H M n I) (x : M) : (toBilinForm g x).Nondegenerate := by
+@[simp] lemma toBilinForm_nondegenerate (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (toBilinForm g x).Nondegenerate := by
   intro v hv; simp_rw [toBilinForm_apply] at hv; exact g.nondegenerate x v hv
 
 lemma symm' (x : M) (v w : TangentSpace I x) : (g.val x v) w = (g.val x w) v :=
   g.symm x v w
 
-lemma nondegenerate' (x : M) (v : TangentSpace I x) (h : ∀ w : TangentSpace I x, (g.val x v) w = 0) :
+lemma nondegenerate' (x : M) (v : TangentSpace I x)
+   (h : ∀ w : TangentSpace I x, (g.val x v) w = 0) :
   v = 0 :=
   g.nondegenerate x v h
 
@@ -295,7 +305,8 @@ lemma negDim_isLocallyConstant' : IsLocallyConstant (fun x => (toQuadraticForm g
 
 /-- The "musical" isomorphism (index lowering) from the tangent space to its dual,
     induced by a pseudo-Riemannian metric. -/
-def flat (g : PseudoRiemannianMetric E H M n I) (x : M) : TangentSpace I x →ₗ[ℝ] (TangentSpace I x →L[ℝ] ℝ) :=
+def flat (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    TangentSpace I x →ₗ[ℝ] (TangentSpace I x →L[ℝ] ℝ) :=
   { toFun := λ v => g.val x v,
     map_add' := λ v w => by simp only [ContinuousLinearMap.map_add],
     map_smul' := λ a v => by simp only [ContinuousLinearMap.map_smul]; rfl }
@@ -304,7 +315,8 @@ def flat (g : PseudoRiemannianMetric E H M n I) (x : M) : TangentSpace I x →�
   (flat g x v) w = g.val x v w := by rfl
 
 /-- The musical isomorphism as a continuous linear map. -/
-def flatL (g : PseudoRiemannianMetric E H M n I) (x : M) : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ) :=
+def flatL (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ) :=
   { toFun := λ v => g.val x v,
     map_add' := λ v w => by simp only [ContinuousLinearMap.map_add],
     map_smul' := λ a v => by simp only [ContinuousLinearMap.map_smul]; rfl,
@@ -313,15 +325,17 @@ def flatL (g : PseudoRiemannianMetric E H M n I) (x : M) : TangentSpace I x →L
 @[simp] lemma flatL_apply (g : PseudoRiemannianMetric E H M n I) (x : M) (v w : TangentSpace I x) :
   (flatL g x v) w = g.val x v w := rfl
 
-@[simp] lemma flat_inj (g : PseudoRiemannianMetric E H M n I) (x : M) : Function.Injective (flat g x) := by
+@[simp] lemma flat_inj (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    Function.Injective (flat g x) := by
   rw [← LinearMap.ker_eq_bot]; apply LinearMap.ker_eq_bot'.mpr
   intro v hv; apply g.nondegenerate' x v; intro w; exact DFunLike.congr_fun hv w
 
-@[simp] lemma flatL_inj (g : PseudoRiemannianMetric E H M n I) (x : M) : Function.Injective (flatL g x) :=
-  flat_inj g x -- Injective on LinearMap implies injective on ContLinearMap
+@[simp] lemma flatL_inj (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    Function.Injective (flatL g x) :=
+  flat_inj g x
 
-/-- In a finite-dimensional normed space, the continuous dual is linearly equivalent to the algebraic dual.
-    This is because in finite dimensions, every linear functional is continuous. -/
+/-- In a finite-dimensional normed space, the continuous dual is linearly equivalent
+    to the algebraic dual. -/
 def ContinuousLinearMap.equivModuleDual (𝕜 E : Type*) [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
     [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensional 𝕜 E] :
     (E →L[𝕜] 𝕜) ≃ₗ[𝕜] Module.Dual 𝕜 E where
@@ -462,7 +476,8 @@ noncomputable def sharp
 
 /-- The metric evaluated at `v` and `sharp ω`. -/
 lemma apply_vec_sharp
-     (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x) (ω : TangentSpace I x →L[ℝ] ℝ) :
+     (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x)
+     (ω : TangentSpace I x →L[ℝ] ℝ) :
     g.val x v (g.sharpL x ω) = ω v := by
   rw [g.symm' x v (g.sharpL x ω)]
   rw [← flatL_apply g x (g.sharpL x ω)]
