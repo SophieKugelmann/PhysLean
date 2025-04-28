@@ -63,10 +63,8 @@ structure RiemannianMetric
   /-- `gₓ(v, v) > 0` for all nonzero `v`. -/
   pos_def' : ∀ x v, v ≠ 0 → val x v v > 0
 
-
 namespace RiemannianMetric
 
--- Propagate instance assumptions
 variable {I_ℝ : ModelWithCorners ℝ E_ℝ H_ℝ} {n : WithTop ℕ∞}
 variable [inst_top : TopologicalSpace (TangentBundle I_ℝ M_ℝ)]
 variable [inst_fib : FiberBundle E_ℝ (TangentSpace I_ℝ : M_ℝ → Type _)]
@@ -233,3 +231,41 @@ noncomputable def TangentSpace.metricSeminormedAddCommGroup
   (x : M_ℝ) :
   SeminormedAddCommGroup (TangentSpace I_ℝ x) :=
   (TangentSpace.metricNormedAddCommGroup g x).toSeminormedAddCommGroup
+/-
+noncomputable def TangentSpace.metricInnerProductSpace
+  (g : @RiemannianMetric E_ℝ _ _ H_ℝ _ M_ℝ _ _ I_ℝ n inst_top inst_fib inst_vec inst_mani inst_cmvb)
+  (x : M_ℝ) :
+  InnerProductSpace ℝ (TangentSpace I_ℝ x) := by
+
+  -- Ensure the underlying group structure is known
+  letI : AddCommGroup (TangentSpace I_ℝ x) := TangentSpace.addCommGroup x
+  letI : TopologicalSpace (TangentSpace I_ℝ x) := inferInstance
+  letI : TopologicalAddGroup (TangentSpace I_ℝ x) := inferInstance
+  letI : UniformSpace (TangentSpace I_ℝ x) := inferInstance
+  letI : UniformAddGroup (TangentSpace I_ℝ x) := ⟨⟩
+
+  -- Provide the specific SeminormedAddCommGroup instance
+  letI : SeminormedAddCommGroup (TangentSpace I_ℝ x) :=
+    TangentSpace.metricSeminormedAddCommGroup g x
+
+  -- Provide the NormedAddCommGroup instance
+  letI : NormedAddCommGroup (TangentSpace I_ℝ x) :=
+    TangentSpace.metricNormedAddCommGroup g x
+
+  -- Build the InnerProductSpace using the custom inner core
+  let core := tangentInnerCore g x
+  letI : NormedSpace ℝ (TangentSpace I_ℝ x) :=
+    @InnerProductSpace.Core.toNormedSpace ℝ (TangentSpace I_ℝ x) _ _ _ core
+  exact InnerProductSpace.ofCore core
+
+
+-- Check the norm_sq_eq_inner property holds for the constructed structure
+lemma TangentSpace.metric_norm_sq_eq_inner
+  (g : @RiemannianMetric E_ℝ _ _ H_ℝ _ M_ℝ _ _ I_ℝ n inst_top inst_fib inst_vec inst_mani inst_cmvb)
+  (x : M_ℝ) (v : TangentSpace I_ℝ x) :
+  letI := TangentSpace.metricNormedAddCommGroup g x
+  ‖v‖ ^ 2 = g.inner x v v := by
+  letI := TangentSpace.metricInnerProductSpace g x
+  exact InnerProductSpace.norm_sq_eq_inner v
+-/
+end RiemannianMetric

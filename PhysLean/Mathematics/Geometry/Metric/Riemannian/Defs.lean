@@ -1,7 +1,5 @@
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import Mathlib.LinearAlgebra.QuadraticForm.Dual
-import Mathlib.Analysis.InnerProductSpace.Basic
-
 section RiemannianMetric
 
 open Bundle Set Finset Function Filter Module Topology ContinuousLinearMap
