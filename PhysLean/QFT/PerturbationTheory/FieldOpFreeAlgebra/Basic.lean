@@ -44,7 +44,7 @@ remark naming_convention := "
   For mathematical objects defined in relation to `FieldOpFreeAlgebra` the postfix `F`
   may be given to
   their names to indicate that they are related to the free algebra.
-  This is to avoid confusion when working within the context of `FieldOpAlgebra` which is defined
+  This is to avoid confusion when working within the context of `WickAlgebra` which is defined
   as a quotient of `FieldOpFreeAlgebra`."
 
 /-- For a field specification `𝓕`, and a element `φ` of `𝓕.CrAnFieldOp`,
@@ -227,6 +227,11 @@ lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnFieldOp) :
   match φs with
   | [] => rfl
   | φ :: φs => erw [List.map_cons]
+
+lemma ofCrAnListF_injective : Function.Injective (ofCrAnListF (𝓕 := 𝓕)) := by
+  intro φs φs' h
+  rw [← ofListBasis_eq_ofList, ← ofListBasis_eq_ofList] at h
+  exact Basis.injective ofCrAnListFBasis h
 
 /-!
 
