@@ -11,6 +11,8 @@ import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
+import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
+import PhysLean.Mathematics.Geometry.Metric.Riemannian.Defs
 import PhysLean.Mathematics.LinearMaps
 import PhysLean.Mathematics.List
 import PhysLean.Mathematics.List.InsertIdx
