@@ -12,7 +12,8 @@ We define the Lorentz group.
 
 ## References
 
-- http://home.ku.edu.tr/~amostafazadeh/phys517_518/phys517_2016f/Handouts/A_Jaffi_Lorentz_Group.pdf
+- *Lorentz Transformations, Rotations, and Boosts*, Jaffe.
+<https://cdn.ku.edu.tr/cdn/files/amostafazadeh/phys517_518/phys517_2016f/Handouts/A_Jaffi_Lorentz_Group.pdf>
 
 -/
 TODO "6VZHM" "Define the Lie group structure on the Lorentz group."
@@ -105,6 +106,10 @@ instance lorentzGroupIsGroup : Group (LorentzGroup d) where
   inv A := ⟨minkowskiMatrix.dual A.1, LorentzGroup.dual_mem A.2⟩
   inv_mul_cancel A := Subtype.eq (LorentzGroup.mem_iff_dual_mul_self.mp A.2)
 
+lemma inv_eq_dual (Λ : LorentzGroup d) :
+    (Λ⁻¹ : LorentzGroup d) = minkowskiMatrix.dual Λ.1 := by
+  rfl
+
 /-- `LorentzGroup` has the subtype topology. -/
 instance : TopologicalSpace (LorentzGroup d) := instTopologicalSpaceSubtype
 
@@ -187,7 +192,7 @@ lemma minkowskiMatrix_comm : minkowskiMatrix * Λ.1 = (transpose Λ⁻¹).1 * mi
 ## Lorentz group as a topological group
 
 We now show that the Lorentz group is a topological group.
-We do this by showing that the natrual map from the Lorentz group to `GL (Fin 4) ℝ` is an
+We do this by showing that the natural map from the Lorentz group to `GL (Fin 4) ℝ` is an
 embedding.
 
 -/
@@ -218,11 +223,11 @@ lemma toProd_eq_transpose_η : toProd Λ = (Λ.1, MulOpposite.op $ minkowskiMatr
 lemma toProd_injective : Function.Injective (@toProd d) := by
   intro A B h
   rw [toProd_eq_transpose_η, toProd_eq_transpose_η] at h
-  rw [@Prod.mk.inj_iff] at h
+  rw [Prod.mk_inj] at h
   exact Subtype.eq h.1
 
 lemma toProd_continuous : Continuous (@toProd d) := by
-  refine continuous_prod_mk.mpr ⟨continuous_iff_le_induced.mpr fun U a ↦ a,
+  refine continuous_prodMk.mpr ⟨continuous_iff_le_induced.mpr fun U a ↦ a,
     MulOpposite.continuous_op.comp' ((continuous_const.matrix_mul (continuous_iff_le_induced.mpr
       fun U a => a).matrix_transpose).matrix_mul continuous_const)⟩
 
