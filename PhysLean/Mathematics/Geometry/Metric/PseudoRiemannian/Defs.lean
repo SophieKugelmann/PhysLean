@@ -475,3 +475,126 @@ lemma apply_vec_sharp
   rw [flatL_apply_sharpL g x ω]
 
 end PseudoRiemannianMetric
+
+namespace PseudoRiemannianMetric
+
+variable {E : Type v} {H : Type w} {M : Type w} {n : WithTop ℕ∞}
+variable [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [ChartedSpace H E]
+variable {I : ModelWithCorners ℝ E H}
+variable [IsManifold I (n + 1) M]
+variable [TopologicalSpace (TotalSpace E (TangentSpace I : M → Type _))]
+variable [FiberBundle E (TangentSpace I : M → Type _)]
+variable [VectorBundle ℝ E (TangentSpace I : M → Type _)]
+variable [ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I]
+variable [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)]
+
+section Cotangent
+
+/-- The value of the induced metric on the cotangent space at point `x`. -/
+noncomputable def cotangentMetricVal (g : PseudoRiemannianMetric E H M n I) (x : M)
+    (ω₁ ω₂ : TangentSpace I x →L[ℝ] ℝ) : ℝ :=
+  g.val x (g.sharpL x ω₁) (g.sharpL x ω₂)
+
+@[simp] lemma cotangentMetricVal_eq_apply_sharp (g : PseudoRiemannianMetric E H M n I) (x : M)
+    (ω₁ ω₂ : TangentSpace I x →L[ℝ] ℝ) :
+  cotangentMetricVal g x ω₁ ω₂ = ω₁ (g.sharpL x ω₂) := by
+  rw [cotangentMetricVal, apply_sharp_sharp]
+
+lemma cotangentMetricVal_symm (g : PseudoRiemannianMetric E H M n I) (x : M)
+    (ω₁ ω₂ : TangentSpace I x →L[ℝ] ℝ) :
+  cotangentMetricVal g x ω₁ ω₂ = cotangentMetricVal g x ω₂ ω₁ := by
+  unfold cotangentMetricVal
+  rw [g.symm' x (g.sharpL x ω₁) (g.sharpL x ω₂)]
+
+/-- The induced metric on the cotangent space at point `x` as a bilinear form. -/
+noncomputable def cotangentToBilinForm (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    LinearMap.BilinForm ℝ (TangentSpace I x →L[ℝ] ℝ) where
+  toFun ω₁ := { toFun := λ ω₂ => cotangentMetricVal g x ω₁ ω₂,
+                map_add' := λ ω₂ ω₃ => by
+                  simp only [cotangentMetricVal,
+                    ContinuousLinearMap.map_add,
+                    ContinuousLinearMap.add_apply],
+                map_smul' := λ c ω₂ => by
+                  simp only [cotangentMetricVal,
+                    map_smul, smul_eq_mul, RingHom.id_apply] }
+  map_add' := λ ω₁ ω₂ => by
+    ext ω₃
+    simp only [cotangentMetricVal,
+      ContinuousLinearMap.map_add,
+      ContinuousLinearMap.add_apply,
+      LinearMap.coe_mk, AddHom.coe_mk, LinearMap.add_apply]
+  map_smul' := λ c ω₁ => by
+    ext ω₂
+    simp only [cotangentMetricVal,
+      ContinuousLinearMap.map_smul,
+      ContinuousLinearMap.smul_apply,
+      LinearMap.coe_mk, AddHom.coe_mk,
+      RingHom.id_apply, LinearMap.smul_apply]
+
+/-- The induced metric on the cotangent space at point `x` as a quadratic form. -/
+noncomputable def cotangentToQuadraticForm (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    QuadraticForm ℝ (TangentSpace I x →L[ℝ] ℝ) where
+  toFun ω := cotangentMetricVal g x ω ω
+  toFun_smul a ω := by
+    simp only [cotangentMetricVal,
+      ContinuousLinearMap.map_smul,
+      ContinuousLinearMap.smul_apply,
+      smul_smul, pow_two]
+  exists_companion' :=
+      ⟨ LinearMap.mk₂ ℝ (fun ω₁ ω₂ =>
+          cotangentMetricVal g x ω₁ ω₂ + cotangentMetricVal g x ω₂ ω₁)
+        (fun ω₁ ω₂ ω₃ => by simp only [cotangentMetricVal, map_add, add_apply]; ring)
+        (fun a ω₁ ω₂ => by
+          simp only [cotangentMetricVal, map_smul, smul_apply];
+          ring_nf; exact Eq.symm (smul_add ..))
+        (fun ω₁ ω₂ ω₃ => by
+          simp only [cotangentMetricVal, map_add, add_apply]; ring)
+        (fun a ω₁ ω₂ => by
+          simp only [cotangentMetricVal, map_smul, smul_apply]; ring_nf;
+          exact Eq.symm (smul_add ..)),
+          by
+            intro ω₁ ω₂
+            simp only [LinearMap.mk₂_apply, cotangentMetricVal]
+            simp only [ContinuousLinearMap.map_add, ContinuousLinearMap.add_apply]
+            ring⟩
+
+@[simp] lemma cotangentToBilinForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M)
+    (ω₁ ω₂ : TangentSpace I x →L[ℝ] ℝ) :
+  cotangentToBilinForm g x ω₁ ω₂ = cotangentMetricVal g x ω₁ ω₂ := rfl
+
+@[simp] lemma cotangentToQuadraticForm_apply (g : PseudoRiemannianMetric E H M n I) (x : M)
+    (ω : TangentSpace I x →L[ℝ] ℝ) :
+  cotangentToQuadraticForm g x ω = cotangentMetricVal g x ω ω := rfl
+
+@[simp] lemma cotangentToBilinForm_isSymm (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (cotangentToBilinForm g x).IsSymm := by
+  intro ω₁ ω₂; simp only [cotangentToBilinForm_apply]; exact cotangentMetricVal_symm g x ω₁ ω₂
+
+/-- The cotangent metric is non-degenerate: if `cotangentMetricVal g x ω v = 0` for all `v`,
+    then `ω = 0`. -/
+lemma cotangentMetricVal_nondegenerate (g : PseudoRiemannianMetric E H M n I) (x : M)
+    (ω : TangentSpace I x →L[ℝ] ℝ) (h : ∀ v : TangentSpace I x →L[ℝ] ℝ,
+      cotangentMetricVal g x ω v = 0) :
+    ω = 0 := by
+  apply ContinuousLinearMap.ext
+  intro v
+  have h_forall : ∀ w : TangentSpace I x, ω w = 0 := by
+    intro w
+    let ω' : TangentSpace I x →L[ℝ] ℝ := g.flatL x w
+    have this : g.sharpL x ω' = w := by
+      simp only [ω', sharpL_apply_flatL]
+    have h_apply : cotangentMetricVal g x ω ω' = 0 := h ω'
+    simp only [cotangentMetricVal_eq_apply_sharp] at h_apply
+    rw [this] at h_apply
+    exact h_apply
+  exact h_forall v
+
+@[simp] lemma cotangentToBilinForm_nondegenerate (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (cotangentToBilinForm g x).Nondegenerate := by
+  intro ω hω
+  apply cotangentMetricVal_nondegenerate g x ω
+  intro v
+  exact hω v
+
+end Cotangent

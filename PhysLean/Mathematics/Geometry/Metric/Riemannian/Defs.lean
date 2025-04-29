@@ -7,6 +7,20 @@ Authors: Matteo Cipollina
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import Mathlib.LinearAlgebra.QuadraticForm.Dual
 
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.Normed.Field.Instances
+import Mathlib.Analysis.RCLike.Lemmas
+import Mathlib.Data.Real.StarOrdered
+import Mathlib.Geometry.Manifold.MFDeriv.Defs
+import Mathlib.Geometry.Manifold.VectorBundle.Basic
+import Mathlib.LinearAlgebra.BilinearForm.Properties
+import Mathlib.LinearAlgebra.FreeModule.PID
+import Mathlib.LinearAlgebra.QuadraticForm.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.Topology.Algebra.Module.ModuleTopology
+import Mathlib.Topology.LocallyConstant.Basic
+import Mathlib.MeasureTheory.Integral.IntervalIntegral
 /-!
 # Riemannian Metric Definitions
 
@@ -114,12 +128,12 @@ noncomputable def tangentInnerCore (g : RiemannianMetric I n M) (x : M) :
   nonneg_re := λ v => by
     simp only [inner_apply, RCLike.re_to_real]
     by_cases hv : v = 0
-    · simp [hv, inner_apply, map_zero, zero_apply]
+    · simp [hv, inner_apply, map_zero]
     · exact le_of_lt (g.pos_def x v hv)
   add_left := λ u v w => by
-    simp only [inner_apply, map_add, add_apply]
+    simp only [inner_apply, map_add, ContinuousLinearMap.add_apply]
   smul_left := λ r u v => by
-    simp only [inner_apply, map_smul, smul_apply, conj_trivial]
+    simp only [inner_apply, map_smul, conj_trivial]
     rfl
   definite := fun v (h_inner_zero : g.inner x v v = 0) => by
     by_contra h_v_ne_zero
@@ -185,5 +199,21 @@ example (g : RiemannianMetric I n M) (x : M) (v : TangentSpace I x) : ℝ :=
 example (g : RiemannianMetric I n M) (x : M) (v : TangentSpace I x) : ℝ :=
   let normed_group := TangentSpace.metricNormedAddCommGroup g x
   @Norm.norm (TangentSpace I x) (@NormedAddCommGroup.toNorm (TangentSpace I x) normed_group) v
+
+lemma norm_eq_norm_of_metricNormedAddCommGroup (g : RiemannianMetric I n M) (x : M)
+    (v : TangentSpace I x) : norm g x v = @Norm.norm (TangentSpace I x)
+    (@NormedAddCommGroup.toNorm _ (TangentSpace.metricNormedAddCommGroup g x)) v := by
+  unfold norm
+  let normed_group := TangentSpace.metricNormedAddCommGroup g x
+  unfold TangentSpace.metricNormedAddCommGroup
+  simp only [inner_apply]
+  rfl
+
+/-- Calculates the length of a curve `γ` between parameters `t₀` and `t₁`
+    using the Riemannian metric `g`. This is defined as the integral of the norm of
+    the tangent vector along the curve. -/
+def curveLength (g : RiemannianMetric I n M) (γ : ℝ → M) (t₀ t₁ : ℝ)
+    {IDE : ModelWithCorners ℝ ℝ ℝ}[ChartedSpace ℝ ℝ] : ℝ :=
+  ∫ t in t₀..t₁, norm g (γ t) ((mfderiv IDE I γ t) ((1 : ℝ) : TangentSpace IDE t))
 
 end RiemannianMetric
