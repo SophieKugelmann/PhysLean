@@ -130,7 +130,7 @@ lemma mul_power_integrable (f : ℝ → ℂ) (hf : MemHS f) (r : ℕ) :
     cases h with
     | intro h =>
       have h' : Q.ξ = 0 := by
-        simpa [one_div] using h
+        simp [one_div] at h
       exact Q.ξ_pos.ne' h'
 
   · simp only [ne_eq, Decidable.not_not] at hr

@@ -3,15 +3,12 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.RCLike.Lemmas
 import Mathlib.Geometry.Manifold.MFDeriv.Defs
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.LinearAlgebra.BilinearForm.Properties
 import Mathlib.LinearAlgebra.QuadraticForm.Real
 import Mathlib.Topology.LocallyConstant.Basic
-
 /-!
 # Pseudo-Riemannian Metrics on Smooth Manifolds
 
@@ -52,7 +49,7 @@ open scoped Manifold Bundle LinearMap Dual
 
 namespace QuadraticForm
 
-variable {K : Type*} [Field K] [LinearOrder K]
+variable {K : Type*} [Field K]
 
 /-- The negative dimension (or index) of a quadratic form is the dimension
     of a maximal negative definite subspace. -/
@@ -185,17 +182,12 @@ structure PseudoRiemannianMetric
     (E : Type v) (H : Type w) (M : Type w) (n : WithTop ℕ∞)
     [inst_norm_grp_E : NormedAddCommGroup E]
     [inst_norm_sp_E : NormedSpace ℝ E]
-    [inst_findim_E : FiniteDimensional ℝ E]
     [inst_top_H : TopologicalSpace H]
     [inst_top_M : TopologicalSpace M]
     [inst_chart_M : ChartedSpace H M]
     [inst_chart_E : ChartedSpace H E]
     (I : ModelWithCorners ℝ E H)
     [inst_mani : IsManifold I (n + 1) M]
-    [inst_total_top : TopologicalSpace (TotalSpace E (TangentSpace I : M → Type _))]
-    [inst_fb : FiberBundle E (TangentSpace I : M → Type _)]
-    [inst_vb : VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [inst_cmvb : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I]
     [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)] :
       Type (max u v w) where
   /-- The metric tensor at each point `x : M`, represented as a continuous linear map
@@ -224,14 +216,10 @@ structure PseudoRiemannianMetric
 namespace PseudoRiemannianMetric
 
 variable {E : Type v} {H : Type w} {M : Type w} {n : WithTop ℕ∞}
-variable [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [ChartedSpace H E]
 variable {I : ModelWithCorners ℝ E H}
 variable [IsManifold I (n + 1) M]
-variable [TopologicalSpace (TotalSpace E (TangentSpace I : M → Type _))]
-variable [FiberBundle E (TangentSpace I : M → Type _)]
-variable [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-variable [ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I]
 variable [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)]
 variable {g : PseudoRiemannianMetric E H M n I}
 
@@ -479,14 +467,10 @@ end PseudoRiemannianMetric
 namespace PseudoRiemannianMetric
 
 variable {E : Type v} {H : Type w} {M : Type w} {n : WithTop ℕ∞}
-variable [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [ChartedSpace H E]
 variable {I : ModelWithCorners ℝ E H}
 variable [IsManifold I (n + 1) M]
-variable [TopologicalSpace (TotalSpace E (TangentSpace I : M → Type _))]
-variable [FiberBundle E (TangentSpace I : M → Type _)]
-variable [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-variable [ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I]
 variable [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)]
 
 section Cotangent
@@ -598,3 +582,4 @@ lemma cotangentMetricVal_nondegenerate (g : PseudoRiemannianMetric E H M n I) (x
   exact hω v
 
 end Cotangent
+#min_imports

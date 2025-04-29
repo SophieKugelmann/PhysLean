@@ -3,24 +3,9 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-
-import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
-import Mathlib.LinearAlgebra.QuadraticForm.Dual
-
 import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.Normed.Field.Instances
-import Mathlib.Analysis.RCLike.Lemmas
-import Mathlib.Data.Real.StarOrdered
-import Mathlib.Geometry.Manifold.MFDeriv.Defs
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.LinearAlgebra.BilinearForm.Properties
-import Mathlib.LinearAlgebra.FreeModule.PID
-import Mathlib.LinearAlgebra.QuadraticForm.Real
-import Mathlib.RingTheory.Henselian
-import Mathlib.Topology.Algebra.Module.ModuleTopology
-import Mathlib.Topology.LocallyConstant.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral
+import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 /-!
 # Riemannian Metric Definitions
 
@@ -46,10 +31,6 @@ variable {I : ModelWithCorners ℝ E H} {n : ℕ∞}
 structure RiemannianMetric
   (I : ModelWithCorners ℝ E H) (n : ℕ∞) (M : Type w)
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I (n + 1) M]
-  [inst_top : TopologicalSpace (TangentBundle I M)]
-  [inst_fib : FiberBundle E (TangentSpace I : M → Type _)]
-  [inst_vec : VectorBundle ℝ E (TangentSpace I : M → Type _)]
-  [inst_cmvb : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I]
   [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)] : Type _ where
   /-- The underlying pseudo-Riemannian metric. -/
   toPseudoRiemannianMetric : PseudoRiemannianMetric E H M (n) I
@@ -60,10 +41,6 @@ namespace RiemannianMetric
 
 variable {I : ModelWithCorners ℝ E H} {n : ℕ∞} {M : Type w}
 variable [TopologicalSpace M] [ChartedSpace H M] [IsManifold I (n + 1) M]
-variable [inst_top : TopologicalSpace (TangentBundle I M)]
-variable [inst_fib : FiberBundle E (TangentSpace I : M → Type _)]
-variable [inst_vec : VectorBundle ℝ E (TangentSpace I : M → Type _)]
-variable [inst_cmvb : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I]
 variable [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)]
 
 /-- Coercion from RiemannianMetric to its underlying PseudoRiemannianMetric. -/
