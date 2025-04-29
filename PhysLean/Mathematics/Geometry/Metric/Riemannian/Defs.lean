@@ -7,6 +7,12 @@ Authors: Matteo Cipollina
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import Mathlib.LinearAlgebra.QuadraticForm.Dual
 
+/-!
+# Riemannian Metric Definitions
+
+This module defines the Riemannian metric, building on pseudo-Riemannian metrics.
+-/
+namespace PseudoRiemannianMetric
 section RiemannianMetric
 
 open Bundle Set Finset Function Filter Module Topology ContinuousLinearMap

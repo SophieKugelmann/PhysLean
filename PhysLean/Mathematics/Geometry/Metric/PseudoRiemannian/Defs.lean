@@ -67,13 +67,12 @@ noncomputable def negDim {E : Type*} [AddCommGroup E]
 
 /-- The i-th standard basis vector has a 1 in the i-th position. -/
 lemma Pi.basisFun_apply_same {𝕜 ι : Type*} [Field 𝕜] [Fintype ι] [DecidableEq ι] (i : ι) :
-  (Pi.basisFun 𝕜 ι) i i = 1 := by
+    (Pi.basisFun 𝕜 ι) i i = 1 := by
   simp only [Pi.basisFun_apply, Pi.single_eq_same]
 
 /-- The i-th standard basis vector has 0 in all positions j ≠ i. -/
 lemma Pi.basisFun_apply_ne {𝕜 ι : Type*} [Field 𝕜] [Fintype ι] [DecidableEq ι] (i j : ι)
-  (h : j ≠ i) :
-  (Pi.basisFun 𝕜 ι) i j = 0 := by
+    (h : j ≠ i) : (Pi.basisFun 𝕜 ι) i j = 0 := by
   simp only [Pi.basisFun_apply, Pi.single_eq_of_ne h]
 
 /-- For a standard basis vector in a weighted sum of squares, only one term in the sum
@@ -288,15 +287,12 @@ lemma symm' (x : M) (v w : TangentSpace I x) : (g.val x v) w = (g.val x w) v :=
   g.symm x v w
 
 lemma nondegenerate' (x : M) (v : TangentSpace I x)
-    (h : ∀ w : TangentSpace I x, (g.val x v) w = 0) :
-    v = 0 :=
-  g.nondegenerate x v h
+    (h : ∀ w : TangentSpace I x, (g.val x v) w = 0) : v = 0 := g.nondegenerate x v h
 
 lemma smooth' (x₀ : M) (v w : E) :
     ContDiffWithinAt ℝ n (fun y => g.val ((extChartAt I x₀).symm y)
     (mfderiv I I ((extChartAt I x₀).symm) y v) (mfderiv I I ((extChartAt I x₀).symm) y w))
-    ((extChartAt I x₀).target) ((extChartAt I x₀) x₀) :=
-  g.smooth_in_charts' x₀ v w
+    ((extChartAt I x₀).target) ((extChartAt I x₀) x₀) := g.smooth_in_charts' x₀ v w
 
 lemma negDim_isLocallyConstant' : IsLocallyConstant (fun x => (toQuadraticForm g x).negDim) :=
   g.negDim_isLocallyConstant
@@ -421,8 +417,7 @@ def sharpEquiv
 /-- The index raising map `sharp` as a continuous linear map. -/
 def sharpL
     (g : PseudoRiemannianMetric E H M n I) (x : M) :
-    (TangentSpace I x →L[ℝ] ℝ) →L[ℝ] TangentSpace I x :=
-  (g.sharpEquiv x).toContinuousLinearMap
+    (TangentSpace I x →L[ℝ] ℝ) →L[ℝ] TangentSpace I x := (g.sharpEquiv x).toContinuousLinearMap
 
 lemma sharpL_eq_toContinuousLinearMap
     (g : PseudoRiemannianMetric E H M n I) (x : M) :
@@ -435,8 +430,7 @@ lemma coe_sharpEquiv
 /-- The index raising map `sharp` as a linear map. -/
 noncomputable def sharp
     (g : PseudoRiemannianMetric E H M n I) (x : M) :
-    (TangentSpace I x →L[ℝ] ℝ) →ₗ[ℝ] TangentSpace I x :=
-  (g.sharpEquiv x).toLinearEquiv.toLinearMap
+    (TangentSpace I x →L[ℝ] ℝ) →ₗ[ℝ] TangentSpace I x := (g.sharpEquiv x).toLinearEquiv.toLinearMap
 
 @[simp] lemma sharpL_apply_flatL
      (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x) :
@@ -445,8 +439,7 @@ noncomputable def sharp
 
 @[simp] lemma flatL_apply_sharpL
     (g : PseudoRiemannianMetric E H M n I) (x : M) (ω : TangentSpace I x →L[ℝ] ℝ) :
-    g.flatL x (g.sharpL x ω) = ω :=
-  (g.flatEquiv x).right_inv ω
+    g.flatL x (g.sharpL x ω) = ω := (g.flatEquiv x).right_inv ω
 
 /-- Applying `sharp` then `flat` recovers the original covector. -/
 @[simp] lemma flat_sharp_apply
