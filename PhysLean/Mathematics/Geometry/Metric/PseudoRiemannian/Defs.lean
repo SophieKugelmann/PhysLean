@@ -58,14 +58,12 @@ variable {K : Type*} [Field K] [LinearOrder K]
     of a maximal negative definite subspace. -/
 noncomputable def negDim {E : Type*} [AddCommGroup E]
     [Module ℝ E] [FiniteDimensional ℝ E]
-    (q : QuadraticForm ℝ E) : ℕ :=
-  by
-    classical
-    let P : (Fin (finrank ℝ E) → SignType) → Prop := fun w =>
-        QuadraticMap.Equivalent q (QuadraticMap.weightedSumSquares ℝ fun i => (w i : ℝ))
-    let h_exists : ∃ w, P w := QuadraticForm.equivalent_signType_weighted_sum_squared q
-    let w := Classical.choose h_exists
-    exact Finset.card (Finset.filter (fun i => w i = SignType.neg) Finset.univ)
+    (q : QuadraticForm ℝ E) : ℕ := by classical
+  let P : (Fin (finrank ℝ E) → SignType) → Prop := fun w =>
+      QuadraticMap.Equivalent q (QuadraticMap.weightedSumSquares ℝ fun i => (w i : ℝ))
+  let h_exists : ∃ w, P w := QuadraticForm.equivalent_signType_weighted_sum_squared q
+  let w := Classical.choose h_exists
+  exact Finset.card (Finset.filter (fun i => w i = SignType.neg) Finset.univ)
 
 /-- The i-th standard basis vector has a 1 in the i-th position. -/
 lemma Pi.basisFun_apply_same {𝕜 ι : Type*} [Field 𝕜] [Fintype ι] [DecidableEq ι] (i : ι) :
@@ -290,12 +288,12 @@ lemma symm' (x : M) (v w : TangentSpace I x) : (g.val x v) w = (g.val x w) v :=
   g.symm x v w
 
 lemma nondegenerate' (x : M) (v : TangentSpace I x)
-   (h : ∀ w : TangentSpace I x, (g.val x v) w = 0) :
-  v = 0 :=
+    (h : ∀ w : TangentSpace I x, (g.val x v) w = 0) :
+    v = 0 :=
   g.nondegenerate x v h
 
 lemma smooth' (x₀ : M) (v w : E) :
-  ContDiffWithinAt ℝ n (fun y => g.val ((extChartAt I x₀).symm y)
+    ContDiffWithinAt ℝ n (fun y => g.val ((extChartAt I x₀).symm y)
     (mfderiv I I ((extChartAt I x₀).symm) y v) (mfderiv I I ((extChartAt I x₀).symm) y w))
     ((extChartAt I x₀).target) ((extChartAt I x₀) x₀) :=
   g.smooth_in_charts' x₀ v w
@@ -406,37 +404,37 @@ lemma finrank_continuousDual_eq_finrank {𝕜 E : Type*} [NontriviallyNormedFiel
       ⟨g.flatL_inj x, g.flatL_surj x⟩)
 
 lemma coe_flatEquiv
-     (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (g.flatEquiv x : TangentSpace I x →ₗ[ℝ] (TangentSpace I x →L[ℝ] ℝ)) = g.flatL x := rfl
 
 @[simp] lemma flatEquiv_apply
-     (g : PseudoRiemannianMetric E H M n I) (x : M) (v w : TangentSpace I x) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) (v w : TangentSpace I x) :
     (g.flatEquiv x v) w = g.val x v w := rfl
 
 /-- The "musical" isomorphism (index raising) from the dual of the tangent space to the
     tangent space, induced by a pseudo-Riemannian metric. This is the inverse of `flatEquiv`. -/
 def sharpEquiv
-     (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (TangentSpace I x →L[ℝ] ℝ) ≃L[ℝ] TangentSpace I x :=
   (g.flatEquiv x).symm
 
 /-- The index raising map `sharp` as a continuous linear map. -/
 def sharpL
-     (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (TangentSpace I x →L[ℝ] ℝ) →L[ℝ] TangentSpace I x :=
   (g.sharpEquiv x).toContinuousLinearMap
 
 lemma sharpL_eq_toContinuousLinearMap
-     (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) :
   g.sharpL x = (g.sharpEquiv x).toContinuousLinearMap := rfl
 
 lemma coe_sharpEquiv
-     (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (g.sharpEquiv x : (TangentSpace I x →L[ℝ] ℝ) →L[ℝ] TangentSpace I x) = g.sharpL x := rfl
 
 /-- The index raising map `sharp` as a linear map. -/
 noncomputable def sharp
-     (g : PseudoRiemannianMetric E H M n I) (x : M) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) :
     (TangentSpace I x →L[ℝ] ℝ) →ₗ[ℝ] TangentSpace I x :=
   (g.sharpEquiv x).toLinearEquiv.toLinearMap
 
@@ -446,13 +444,13 @@ noncomputable def sharp
   (g.flatEquiv x).left_inv v
 
 @[simp] lemma flatL_apply_sharpL
-     (g : PseudoRiemannianMetric E H M n I) (x : M) (ω : TangentSpace I x →L[ℝ] ℝ) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) (ω : TangentSpace I x →L[ℝ] ℝ) :
     g.flatL x (g.sharpL x ω) = ω :=
   (g.flatEquiv x).right_inv ω
 
 /-- Applying `sharp` then `flat` recovers the original covector. -/
 @[simp] lemma flat_sharp_apply
-     (g : PseudoRiemannianMetric E H M n I) (x : M) (ω : TangentSpace I x →L[ℝ] ℝ) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) (ω : TangentSpace I x →L[ℝ] ℝ) :
     g.flat x (g.sharp x ω) = ω := by
   have := flatL_apply_sharpL g x ω
   simp only [sharp, sharpL, flat, flatL, coe_flatEquiv]; simp only [coe_sharpEquiv,
@@ -460,7 +458,7 @@ noncomputable def sharp
   exact this
 
 @[simp] lemma sharp_flat_apply
-     (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x) :
     g.sharp x (g.flat x v) = v := by
   have := sharpL_apply_flatL g x v
   simp only [sharp, sharpL, flat, flatL]; simp only [coe_flatEquiv, coe_sharpEquiv,
@@ -469,15 +467,15 @@ noncomputable def sharp
 
 /-- The metric evaluated at `sharp ω₁` and `sharp ω₂`. -/
 @[simp] lemma apply_sharp_sharp
-     (g : PseudoRiemannianMetric E H M n I) (x : M) (ω₁ ω₂ : TangentSpace I x →L[ℝ] ℝ) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) (ω₁ ω₂ : TangentSpace I x →L[ℝ] ℝ) :
     g.val x (g.sharpL x ω₁) (g.sharpL x ω₂) = ω₁ (g.sharpL x ω₂) := by
   rw [← flatL_apply g x (g.sharpL x ω₁)]
   rw [flatL_apply_sharpL g x ω₁]
 
 /-- The metric evaluated at `v` and `sharp ω`. -/
 lemma apply_vec_sharp
-     (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x)
-     (ω : TangentSpace I x →L[ℝ] ℝ) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x)
+    (ω : TangentSpace I x →L[ℝ] ℝ) :
     g.val x v (g.sharpL x ω) = ω v := by
   rw [g.symm' x v (g.sharpL x ω)]
   rw [← flatL_apply g x (g.sharpL x ω)]
