@@ -582,4 +582,3 @@ lemma cotangentMetricVal_nondegenerate (g : PseudoRiemannianMetric E H M n I) (x
   exact hω v
 
 end Cotangent
-#min_imports
