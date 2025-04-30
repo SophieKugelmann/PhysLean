@@ -20,7 +20,7 @@ open PseudoRiemannianMetric InnerProductSpace
 
 noncomputable section
 
-variable {E : Type v} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {E : Type v} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type w} [TopologicalSpace H]
 variable {M : Type w} [TopologicalSpace M] [ChartedSpace H M] [ChartedSpace H E]
 variable {I : ModelWithCorners ℝ E H} {n : ℕ∞}
