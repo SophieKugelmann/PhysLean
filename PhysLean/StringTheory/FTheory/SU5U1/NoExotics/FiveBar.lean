@@ -249,9 +249,7 @@ lemma quantaBarFive_zero_chiralityFlux_mem (h3L : 𝓜.ThreeLeptonDoublets) :
   · rw [hn 5 hr]
     simp
 
-/-- The number of 5-bar representations is less than or equal to eight.
-  Note the existences of `quantaBarFive_card_le_seven`. The proof of this weaker result
-  does not rely on the assumptions of no-duplicate charges. -/
+/-- The number of 5-bar representations is less than or equal to eight. -/
 lemma quantaBarFive_card_le_eight (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.quantaBarFive.card ≤ 8 := by
   have h1 : 𝓜.quantaBarFive.card =
@@ -276,15 +274,11 @@ with zero to five chirality fluxes equal to zero.
 -/
 lemma quantaBarFive_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
     𝓜.quantaBarFive.map QuantaBarFive.M ∈
-    ({{1, 1, 1, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0}, {1, 1, 1, 0, 0},
+    ({{1, 1, 1, 0, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0, 0}, {1, 1, 1, 0, 0, 0}, {1, 1, 1, 0, 0},
       {1, 2, 0, 0, 0, 0, 0}, {1, 2, 0, 0, 0, 0}, {1, 2, 0, 0, 0}, {1, 2, 0, 0},
       {3, 0, 0, 0, 0, 0}, {3, 0, 0, 0, 0}, {3, 0, 0, 0}, {3, 0, 0}} :
       Finset (Multiset ChiralityFlux)) := by
-  have hcard : (𝓜.quantaBarFive.map QuantaBarFive.M).card ≤ 7 := by
-    rw [Multiset.card_map]
-    exact 𝓜.quantaBarFive_card_le_seven
-  rw [← (Multiset.filter_add_not (fun x => x = 0)
-    (Multiset.map QuantaBarFive.M 𝓜.quantaBarFive))] at hcard ⊢
+  rw [← (Multiset.filter_add_not (fun x => x = 0) (Multiset.map QuantaBarFive.M 𝓜.quantaBarFive))]
   have hz := quantaBarFive_zero_chiralityFlux_mem h3L
   have h0 := quantaBarFive_chiralityFlux_filter_non_zero_mem h3
   simp only [Finset.mem_insert, Finset.mem_singleton] at hz
@@ -301,9 +295,6 @@ lemma quantaBarFive_chiralityFlux_mem (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜
     rw [Multiset.add_comm, Multiset.singleton_add]
     simp only [Multiset.cons_zero, Finset.mem_insert, Finset.mem_singleton,
       Multiset.empty_eq_zero, true_or, or_true]
-  -- The case of {1, 1, 1, 0, 0, 0, 0, 0}
-  rw [hz, h0] at hcard
-  simp at hcard
 
 /-- The number of 5-bar representations (including the Higges) is greater then or equal to three. -/
 lemma quantaBarFive_three_le_card (h3 : 𝓜.ThreeChiralFamiles) (h3L : 𝓜.ThreeLeptonDoublets) :
