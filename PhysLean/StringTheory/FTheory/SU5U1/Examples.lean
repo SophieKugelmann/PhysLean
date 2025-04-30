@@ -54,10 +54,7 @@ def mkOneTenFourFiveBar (I : CodimensionOneConfig) (M : ChiralityFlux) (N : Hype
     (h5 : ∀ a ∈ ({(M, N, ⟨q5₁, hq5₁⟩), (3 - M, - N, ⟨q5₂, hq5₂⟩)} :
       Multiset (QuantaBarFive I)), a.M = 0 → a.N ≠ 0 := by decide)
     (h10 :  ∀ a ∈ ({(3, 0, ⟨q10, hq10⟩)} :
-      Multiset (QuantaTen I)), a.M = 0 → a.N ≠ 0 := by decide)
-    (hd5 : DistinctChargedBarFive (I := I) {(M, N, ⟨q5₁, hq5₁⟩), (3 - M, - N, ⟨q5₂, hq5₂⟩)}
-      ⟨-qHu, hqHu⟩ ⟨qHd, hqHd⟩ := by decide)
-    (hd10 : DistinctChargedTen (I := I) {(3, 0, ⟨q10, hq10⟩)} := by decide) :
+      Multiset (QuantaTen I)), a.M = 0 → a.N ≠ 0 := by decide) :
     MatterContent I where
   quantaTen := {(3, 0, ⟨q10, hq10⟩)}
   qHu := ⟨- qHu, hqHu⟩
@@ -66,15 +63,11 @@ def mkOneTenFourFiveBar (I : CodimensionOneConfig) (M : ChiralityFlux) (N : Hype
     (3 - M, - N, ⟨q5₂, hq5₂⟩)}
   chirality_charge_not_both_zero_bar_five_matter := h5
   chirality_charge_not_both_zero_ten := h10
-  distinctly_charged_quantaBarFiveMatter := hd5
-  distinctly_charged_quantaTen := hd10
 
 /-- An example of matter content with one 10d representation and 4 5-bar representations.
   This corresponds to example I.1.4.a in table 1 of arXiv:1507.05961. -/
 def caseI14a : MatterContent .same :=
   mkOneTenFourFiveBar .same 1 2 (-1) 2 2 (-1) 1
-
--- #eval println! caseI14a.phenoCharges
 
 /-- An example of matter content with one 10d representation and 4 5-bar representations.
   This corresponds to example I.1.4.b in table 1 of arXiv:1507.05961. -/
@@ -123,8 +116,6 @@ def caseI24a : MatterContent .same where
     simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
-  distinctly_charged_quantaBarFiveMatter := by decide
-  distinctly_charged_quantaTen := by decide
 
 /-- An example of matter content with two 10d representation and 4 5-bar representations.
   This corresponds to one of the two versions of the I.2.4.a in table 8 of arXiv:1507.05961. -/
@@ -137,8 +128,6 @@ def caseI24a' : MatterContent .same where
     simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
-  distinctly_charged_quantaBarFiveMatter := by decide
-  distinctly_charged_quantaTen := by decide
 
 /-- An example of matter content with two 10d representation and 4 5-bar representations.
   This corresponds to one of the four versions of I.2.4.b in table 8 of arXiv:1507.05961. -/
@@ -151,8 +140,6 @@ def caseI24b : MatterContent .same where
     simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
-  distinctly_charged_quantaBarFiveMatter := by decide
-  distinctly_charged_quantaTen := by decide
 
 /-- An example of matter content with two 10d representation and 4 5-bar representations.
   This corresponds to one of the four versions of I.2.4.b in table 8 of arXiv:1507.05961. -/
@@ -165,8 +152,6 @@ def caseI24b' : MatterContent .same where
     simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
-  distinctly_charged_quantaBarFiveMatter := by decide
-  distinctly_charged_quantaTen := by decide
 
 /-- An example of matter content with two 10d representation and 4 5-bar representations.
   This corresponds to one of the four versions of I.2.4.b in table 8 of arXiv:1507.05961. -/
@@ -179,8 +164,6 @@ def caseI24b'' : MatterContent .same where
     simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
-  distinctly_charged_quantaBarFiveMatter := by decide
-  distinctly_charged_quantaTen := by decide
 
 /-- An example of matter content with two 10d representation and 4 5-bar representations.
   This corresponds to one of the four versions of I.2.4.b in table 8 of arXiv:1507.05961. -/
@@ -193,8 +176,6 @@ def caseI24b''' : MatterContent .same where
     simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
-  distinctly_charged_quantaBarFiveMatter := by decide
-  distinctly_charged_quantaTen := by decide
 
 /-!
 
@@ -209,13 +190,12 @@ def caseI34a : MatterContent .same where
   quantaTen := {(1, 0, ⟨-3, by decide⟩), (1, 0, ⟨-2, by decide⟩), (1, 0, ⟨-1, by decide⟩)}
   qHu := ⟨-2, by decide⟩
   qHd := ⟨1, by decide⟩
-  quantaBarFiveMatter := {(0, 3, ⟨-1, by decide⟩), (3, -3, ⟨0, by decide⟩)}
+  quantaBarFiveMatter := {
+    (0, 3, ⟨-1, by decide⟩), (3, -3, ⟨0, by decide⟩)}
   chirality_charge_not_both_zero_bar_five_matter := by
     simp [QuantaBarFive.N]
   chirality_charge_not_both_zero_ten := by
     simp [QuantaTen.N, QuantaTen.M]
-  distinctly_charged_quantaBarFiveMatter := by decide
-  distinctly_charged_quantaTen := by decide
 
 /-- The finite set of all examples of MatterContent currently defined in PhysLean. -/
 def allCases : Finset (Σ I, MatterContent I) :=
