@@ -12,6 +12,7 @@ import PhysLean.Cosmology.FLRW.Basic
 import PhysLean.Electromagnetism.Basic
 import PhysLean.Electromagnetism.FieldStrength.Basic
 import PhysLean.Electromagnetism.FieldStrength.Derivative
+import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Mathematics.FDerivCurry
@@ -254,4 +255,5 @@ import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Basic
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.FiveBar
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Ten
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
 import PhysLean.Thermodynamics.Basic
