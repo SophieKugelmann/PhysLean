@@ -7,6 +7,8 @@ import Mathlib.Algebra.BigOperators.Group.Multiset.Defs
 import Mathlib.Algebra.Group.Int.Defs
 import Mathlib.Algebra.Order.Group.Unbundled.Abs
 import PhysLean.StringTheory.FTheory.SU5U1.Charges
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Powerset
 /-!
 
 # Matter
@@ -66,6 +68,33 @@ abbrev QuantaTen.N {I : CodimensionOneConfig} (a : QuantaTen I) : HyperChargeFlu
 abbrev QuantaTen.q {I : CodimensionOneConfig} (a : QuantaTen I) :
     I.allowedTenCharges := a.2.2
 
+/-- The proposition on `Multiset (QuantaBarFive I)`,
+  and two `I.allowedBarFiveCharges` denoted `qHu` and `qHd` which is true
+  if none of the (underlying) charges are equal. -/
+def DistinctChargedBarFive {I : CodimensionOneConfig}
+    (quantaBarFiveMatter : Multiset (QuantaBarFive I))
+    (qHu : I.allowedBarFiveCharges) (qHd : I.allowedBarFiveCharges) : Prop :=
+  (quantaBarFiveMatter.map QuantaBarFive.q).toFinset.card =
+      (quantaBarFiveMatter.map QuantaBarFive.q).card
+    ∧ qHu ∉ (quantaBarFiveMatter.map QuantaBarFive.q)
+    ∧ qHd ∉ (quantaBarFiveMatter.map QuantaBarFive.q)
+    ∧ qHu ≠ qHd
+
+instance {I : CodimensionOneConfig}
+    (quantaBarFiveMatter : Multiset (QuantaBarFive I))
+    (qHu : I.allowedBarFiveCharges) (qHd : I.allowedBarFiveCharges) :
+    Decidable (DistinctChargedBarFive quantaBarFiveMatter qHu qHd) := instDecidableAnd
+
+/-- The proposition on a `Multiset (QuantaTen I)` which is true if non of the underlying
+  charges are equal. -/
+def DistinctChargedTen {I : CodimensionOneConfig}
+    (quantaTen : Multiset (QuantaTen I)) : Prop :=
+  (quantaTen.map QuantaTen.q).toFinset.card = (quantaTen.map QuantaTen.q).card
+
+instance {I : CodimensionOneConfig}
+    (quantaTen : Multiset (QuantaTen I)) :
+    Decidable (DistinctChargedTen quantaTen) := decEq _ _
+
 /-- The matter content, assumed to sit in the 5-bar or 10d representation of
   `SU(5)`. -/
 @[ext]
@@ -83,6 +112,10 @@ structure MatterContent (I : CodimensionOneConfig) where
     ∀ a ∈ quantaBarFiveMatter, (a.M = 0 → a.N ≠ 0)
   /-- There is no matter in the 10d representation with zero `Chirality` and `HyperChargeFlux`. -/
   chirality_charge_not_both_zero_ten : ∀ a ∈ quantaTen, (a.M = 0 → a.N ≠ 0)
+  /-- All 5-bar representations carry distinct charges. -/
+  distinctly_charged_quantaBarFiveMatter : DistinctChargedBarFive quantaBarFiveMatter qHu qHd
+  /-- All 10d representations carry distinct charges. -/
+  distinctly_charged_quantaTen : DistinctChargedTen quantaTen
 
 namespace MatterContent
 
@@ -145,6 +178,23 @@ lemma quantaBarFiveMatter_map_q_eq_toFinset :
   rw [← Multiset.dedup_eq_self] at h1
   conv_lhs => rw [← h1]
   rfl
+
+lemma quantaBarFiveMatter_map_q_mem_powerset :
+    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈
+      Finset.powerset (Finset.univ (α := I.allowedBarFiveCharges)) := by
+  rw [Finset.mem_powerset]
+  exact Finset.subset_univ _
+
+lemma quantaBarFiveMatter_map_q_mem_powerset_filter_card {n : ℕ}
+    (hcard : 𝓜.quantaBarFiveMatter.card = n) :
+    (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).toFinset ∈
+      (Finset.univ (α := I.allowedBarFiveCharges)).powerset.filter fun x => x.card = n := by
+  simp only [Finset.mem_filter, Finset.mem_powerset, Finset.subset_univ, true_and]
+  trans (𝓜.quantaBarFiveMatter.map (QuantaBarFive.q)).card
+  · rw [quantaBarFiveMatter_map_q_eq_toFinset]
+    simp only [Multiset.toFinset_val, Multiset.toFinset_dedup]
+    rfl
+  · simpa using hcard
 
 lemma quantaBarFive_map_q_noDup : (𝓜.quantaBarFive.map (QuantaBarFive.q)).Nodup := by
   simp only [quantaBarFive, Int.reduceNeg, Multiset.map_cons, Multiset.nodup_cons,
