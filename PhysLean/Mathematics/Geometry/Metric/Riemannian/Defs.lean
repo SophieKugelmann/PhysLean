@@ -96,7 +96,7 @@ variable (g : RiemannianMetric I n M) (x : M)
 lemma inner_symm (v w : TangentSpace I x) :
     g.inner x v w = g.inner x w v := by
   simp only [inner_apply]
-  exact g.toPseudoRiemannianMetric.symm' x v w
+  exact g.toPseudoRiemannianMetric.symm x v w
 
 /-- The inner product space core for the tangent space at a point, derived from the
 Riemannian metric. -/
