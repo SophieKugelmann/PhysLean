@@ -62,16 +62,6 @@ noncomputable def negDim {E : Type*} [AddCommGroup E]
   let w := Classical.choose h_exists
   exact Finset.card (Finset.filter (fun i => w i = SignType.neg) Finset.univ)
 
-/-- The i-th standard basis vector has a 1 in the i-th position. -/
-lemma Pi.basisFun_apply_same {𝕜 ι : Type*} [Field 𝕜] [Fintype ι] [DecidableEq ι] (i : ι) :
-    (Pi.basisFun 𝕜 ι) i i = 1 := by
-  simp only [Pi.basisFun_apply, Pi.single_eq_same]
-
-/-- The i-th standard basis vector has 0 in all positions j ≠ i. -/
-lemma Pi.basisFun_apply_ne {𝕜 ι : Type*} [Field 𝕜] [Fintype ι] [DecidableEq ι] (i j : ι)
-    (h : j ≠ i) : (Pi.basisFun 𝕜 ι) i j = 0 := by
-  simp only [Pi.basisFun_apply, Pi.single_eq_of_ne h]
-
 /-- For a standard basis vector in a weighted sum of squares, only one term in the sum
     is nonzero. -/
 lemma QuadraticMap.weightedSumSquares_basis_vector {E : Type*} [AddCommGroup E]
@@ -192,23 +182,23 @@ structure PseudoRiemannianMetric
       Type (max u v w) where
   /-- The metric tensor at each point `x : M`, represented as a continuous linear map
       `TₓM →L[ℝ] (TₓM →L[ℝ] ℝ)`. Applying it twice, `(val x v) w`, yields `gₓ(v, w)`. -/
-  protected val : ∀ (x : M), TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)
+  val : ∀ (x : M), TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] ℝ)
   /-- The metric is symmetric: `gₓ(v, w) = gₓ(w, v)`. -/
-  protected symm : ∀ (x : M) (v w : TangentSpace I x), (val x v) w = (val x w) v
+  symm : ∀ (x : M) (v w : TangentSpace I x), (val x v) w = (val x w) v
   /-- The metric is non-degenerate: if `gₓ(v, w) = 0` for all `w`, then `v = 0`. -/
-  protected nondegenerate : ∀ (x : M) (v : TangentSpace I x), (∀ w : TangentSpace I x,
+  nondegenerate : ∀ (x : M) (v : TangentSpace I x), (∀ w : TangentSpace I x,
     (val x v) w = 0) → v = 0
   /-- The metric varies smoothly: Expressed in local coordinates via any chart `e`, the function
       `y ↦ g_{e.symm y}(mfderiv I I e.symm y v, mfderiv I I e.symm y w)` is `C^n` smooth on the
       chart's target `e.target` for any constant vectors `v, w` in the model space `E`. -/
-  protected smooth_in_charts' : ∀ (x₀ : M) (v w : E),
+  smooth_in_charts' : ∀ (x₀ : M) (v w : E),
     let e := extChartAt I x₀
     ContDiffWithinAt ℝ n
       (fun y => val (e.symm y) (mfderiv I I e.symm y v) (mfderiv I I e.symm y w))
       (e.target) (e x₀)
   /-- The negative dimension (`QuadraticForm.negDim`) of the metric's quadratic form is
       locally constant. On a connected manifold, this implies it is constant globally. -/
-  protected negDim_isLocallyConstant :
+  negDim_isLocallyConstant :
     IsLocallyConstant (fun x : M =>
       have : FiniteDimensional ℝ (TangentSpace I x) := inferInstance
       (pseudoRiemannianMetricValToQuadraticForm val symm x).negDim)
