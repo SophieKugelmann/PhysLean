@@ -3,24 +3,9 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-
-import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
-import Mathlib.LinearAlgebra.QuadraticForm.Dual
-
 import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.Normed.Field.Instances
-import Mathlib.Analysis.RCLike.Lemmas
-import Mathlib.Data.Real.StarOrdered
-import Mathlib.Geometry.Manifold.MFDeriv.Defs
-import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.LinearAlgebra.BilinearForm.Properties
-import Mathlib.LinearAlgebra.FreeModule.PID
-import Mathlib.LinearAlgebra.QuadraticForm.Real
-import Mathlib.RingTheory.Henselian
-import Mathlib.Topology.Algebra.Module.ModuleTopology
-import Mathlib.Topology.LocallyConstant.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral
+import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 /-!
 # Riemannian Metric Definitions
 
@@ -35,7 +20,7 @@ open PseudoRiemannianMetric InnerProductSpace
 
 noncomputable section
 
-variable {E : Type v} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+variable {E : Type v} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type w} [TopologicalSpace H]
 variable {M : Type w} [TopologicalSpace M] [ChartedSpace H M] [ChartedSpace H E]
 variable {I : ModelWithCorners ℝ E H} {n : ℕ∞}
@@ -46,10 +31,6 @@ variable {I : ModelWithCorners ℝ E H} {n : ℕ∞}
 structure RiemannianMetric
   (I : ModelWithCorners ℝ E H) (n : ℕ∞) (M : Type w)
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I (n + 1) M]
-  [inst_top : TopologicalSpace (TangentBundle I M)]
-  [inst_fib : FiberBundle E (TangentSpace I : M → Type _)]
-  [inst_vec : VectorBundle ℝ E (TangentSpace I : M → Type _)]
-  [inst_cmvb : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I]
   [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)] : Type _ where
   /-- The underlying pseudo-Riemannian metric. -/
   toPseudoRiemannianMetric : PseudoRiemannianMetric E H M (n) I
@@ -60,17 +41,14 @@ namespace RiemannianMetric
 
 variable {I : ModelWithCorners ℝ E H} {n : ℕ∞} {M : Type w}
 variable [TopologicalSpace M] [ChartedSpace H M] [IsManifold I (n + 1) M]
-variable [inst_top : TopologicalSpace (TangentBundle I M)]
-variable [inst_fib : FiberBundle E (TangentSpace I : M → Type _)]
-variable [inst_vec : VectorBundle ℝ E (TangentSpace I : M → Type _)]
-variable [inst_cmvb : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I]
 variable [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)]
 
 /-- Coercion from RiemannianMetric to its underlying PseudoRiemannianMetric. -/
 instance : Coe (RiemannianMetric I n M) (PseudoRiemannianMetric E H M (n) I) where
   coe g := g.toPseudoRiemannianMetric
 
-@[simp] lemma pos_def (g : RiemannianMetric I n M) (x : M) (v : TangentSpace I x)
+@[simp]
+lemma pos_def (g : RiemannianMetric I n M) (x : M) (v : TangentSpace I x)
     (hv : v ≠ 0) :
   (g.toPseudoRiemannianMetric.val x v) v > 0 := g.pos_def' x v hv
 
@@ -87,17 +65,19 @@ abbrev toQuadraticForm (g : RiemannianMetric I n M) (x : M) :
   g.toPseudoRiemannianMetric.toQuadraticForm x
 
 /-- The quadratic form associated with a Riemannian metric is positive definite. -/
-@[simp] lemma toQuadraticForm_posDef (g : RiemannianMetric I n M) (x : M) :
+@[simp]
+lemma toQuadraticForm_posDef (g : RiemannianMetric I n M) (x : M) :
     (g.toQuadraticForm x).PosDef :=
   λ v hv => g.pos_def x v hv
 
 /-- The application of a Riemannian metric's quadratic form to a vector. -/
-@[simp] lemma toQuadraticForm_apply (g : RiemannianMetric I n M) (x : M)
+@[simp]
+lemma toQuadraticForm_apply (g : RiemannianMetric I n M) (x : M)
     (v : TangentSpace I x) :
     g.toQuadraticForm x v = g.toPseudoRiemannianMetric.val x v v := by
   simp only [toQuadraticForm, PseudoRiemannianMetric.toQuadraticForm_apply]
 
-theorem riemannian_metric_negDim_zero (g : RiemannianMetric I n M) (x : M) :
+lemma riemannian_metric_negDim_zero (g : RiemannianMetric I n M) (x : M) :
     (g.toQuadraticForm x).negDim = 0 := by
     apply QuadraticForm.rankNeg_eq_zero
     exact g.toQuadraticForm_posDef x
@@ -106,7 +86,8 @@ theorem riemannian_metric_negDim_zero (g : RiemannianMetric I n M) (x : M) :
 def inner (g : RiemannianMetric I n M) (x : M) (v w : TangentSpace I x) : ℝ :=
   g.toPseudoRiemannianMetric.val x v w
 
-@[simp] lemma inner_apply (g : RiemannianMetric I n M) (x : M) (v w : TangentSpace I x) :
+@[simp]
+lemma inner_apply (g : RiemannianMetric I n M) (x : M) (v w : TangentSpace I x) :
   inner g x v w = g.toPseudoRiemannianMetric.val x v w := rfl
 
 variable (g : RiemannianMetric I n M) (x : M)
