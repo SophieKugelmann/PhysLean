@@ -3,9 +3,11 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
+
 import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.MeasureTheory.Integral.IntervalIntegral
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
+
 /-!
 # Riemannian Metric Definitions
 
@@ -79,8 +81,8 @@ lemma toQuadraticForm_apply (g : RiemannianMetric I n M) (x : M)
 
 lemma riemannian_metric_negDim_zero (g : RiemannianMetric I n M) (x : M) :
     (g.toQuadraticForm x).negDim = 0 := by
-    apply QuadraticForm.rankNeg_eq_zero
-    exact g.toQuadraticForm_posDef x
+  apply QuadraticForm.rankNeg_eq_zero
+  exact g.toQuadraticForm_posDef x
 
 /-- The inner product on the tangent space at point `x` induced by the Riemannian metric `g`. -/
 def inner (g : RiemannianMetric I n M) (x : M) (v w : TangentSpace I x) : ℝ :=
@@ -88,7 +90,7 @@ def inner (g : RiemannianMetric I n M) (x : M) (v w : TangentSpace I x) : ℝ :=
 
 @[simp]
 lemma inner_apply (g : RiemannianMetric I n M) (x : M) (v w : TangentSpace I x) :
-  inner g x v w = g.toPseudoRiemannianMetric.val x v w := rfl
+    inner g x v w = g.toPseudoRiemannianMetric.val x v w := rfl
 
 variable (g : RiemannianMetric I n M) (x : M)
 

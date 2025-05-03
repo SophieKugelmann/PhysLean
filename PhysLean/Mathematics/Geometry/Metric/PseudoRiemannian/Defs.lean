@@ -270,7 +270,7 @@ def flat (g : PseudoRiemannianMetric E H M n I) (x : M) :
 
 @[simp]
 lemma flat_apply (g : PseudoRiemannianMetric E H M n I) (x : M) (v w : TangentSpace I x) :
-  (flat g x v) w = g.val x v w := by rfl
+    (flat g x v) w = g.val x v w := by rfl
 
 /-- The musical isomorphism as a continuous linear map. -/
 def flatL (g : PseudoRiemannianMetric E H M n I) (x : M) :
@@ -282,7 +282,7 @@ def flatL (g : PseudoRiemannianMetric E H M n I) (x : M) :
 
 @[simp]
 lemma flatL_apply (g : PseudoRiemannianMetric E H M n I) (x : M) (v w : TangentSpace I x) :
-  (flatL g x v) w = g.val x v w := rfl
+    (flatL g x v) w = g.val x v w := rfl
 
 @[simp]
 lemma flat_inj (g : PseudoRiemannianMetric E H M n I) (x : M) :
@@ -397,7 +397,7 @@ noncomputable def sharp
 
 @[simp]
 lemma sharpL_apply_flatL
-     (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x) :
+    (g : PseudoRiemannianMetric E H M n I) (x : M) (v : TangentSpace I x) :
     g.sharpL x (g.flatL x v) = v :=
   (g.flatEquiv x).left_inv v
 
