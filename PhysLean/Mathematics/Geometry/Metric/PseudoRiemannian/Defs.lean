@@ -3,12 +3,14 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
+
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.RCLike.Lemmas
 import Mathlib.Geometry.Manifold.MFDeriv.Defs
 import Mathlib.LinearAlgebra.BilinearForm.Properties
 import Mathlib.LinearAlgebra.QuadraticForm.Real
 import Mathlib.Topology.LocallyConstant.Basic
+
 /-!
 # Pseudo-Riemannian Metrics on Smooth Manifolds
 
@@ -164,9 +166,9 @@ private def pseudoRiemannianMetricValToQuadraticForm
               ring⟩
 
 /-- A pseudo-Riemannian metric of smoothness class `C^n` on a manifold `M` modelled on `(E, H)`
-    with model `I`. This structure defines a smoothly varying, non-degenerate, symmetric,
-    continuous bilinear form `gₓ` of constant negative dimension on the tangent space `TₓM`
-    at each point `x`. Requires `M` to be `C^{n+1}` smooth.-/
+with model `I`. This structure defines a smoothly varying, non-degenerate, symmetric,
+continuous bilinear form `gₓ` of constant negative dimension on the tangent space `TₓM`
+at each point `x`. Requires `M` to be `C^{n+1}` smooth.-/
 @[ext]
 structure PseudoRiemannianMetric
     (E : Type v) (H : Type w) (M : Type w) (n : WithTop ℕ∞)
