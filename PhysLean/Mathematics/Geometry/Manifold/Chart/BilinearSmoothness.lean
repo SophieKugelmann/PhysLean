@@ -47,8 +47,8 @@ lemma contDiffWithinAt_eval_bilinear_apply (hf : ContDiffWithinAt ℝ n f_bilin 
 variable[FiniteDimensional ℝ E]
 
 lemma contDiffWithinAt_bilinear_apply_iff_forall_coord :
-  (∀ v w, ContDiffWithinAt ℝ n (fun x => f_bilin x v w) s_set x₀_pt) →
-  ContDiffWithinAt ℝ n f_bilin s_set x₀_pt := by
+    (∀ v w, ContDiffWithinAt ℝ n (fun x => f_bilin x v w) s_set x₀_pt) →
+    ContDiffWithinAt ℝ n f_bilin s_set x₀_pt := by
   intro h_comp
   rw [ContDiff.iff_forall_coord (V := E →L[ℝ] E →L[ℝ] ℝ) (𝕜 := ℝ)]
   intro φ
