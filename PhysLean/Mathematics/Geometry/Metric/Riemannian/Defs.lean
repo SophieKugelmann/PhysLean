@@ -5,7 +5,9 @@ Authors: Matteo Cipollina
 -/
 
 import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.MeasureTheory.Integral.IntervalIntegral
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 
 /-!
@@ -105,10 +107,10 @@ Riemannian metric. -/
 noncomputable def tangentInnerCore (g : RiemannianMetric I n M) (x : M) :
     InnerProductSpace.Core ℝ (TangentSpace I x) where
   inner := λ v w => g.inner x v w
-  conj_symm := λ v w => by
+  conj_inner_symm := λ v w => by
     simp only [inner_apply, conj_trivial]
     exact g.toPseudoRiemannianMetric.symm x w v
-  nonneg_re := λ v => by
+  re_inner_nonneg := λ v => by
     simp only [inner_apply, RCLike.re_to_real]
     by_cases hv : v = 0
     · simp [hv, inner_apply, map_zero]
