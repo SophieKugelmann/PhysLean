@@ -112,7 +112,7 @@ lemma on_basis_expansions
   rw [vector_basis_expansion b v, vector_basis_expansion b w]
   rw [sum_mul_left_right L Finset.univ Finset.univ
       (fun i => b.coord i v) b (fun j => b.coord j w) b]
-  simp only [←vector_basis_expansion b v, ←vector_basis_expansion b w]
+  simp only [← vector_basis_expansion b v, ←vector_basis_expansion b w]
 
 /-- The sum of elementary bilinear forms weighted by coefficients,
     when applied to vectors, equals a weighted sum of the products of
