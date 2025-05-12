@@ -8,7 +8,7 @@ import Mathlib.Algebra.Lie.OfAssociative
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
-import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
+import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Chart
 
 /-!
 # Riemannian Metric Definitions

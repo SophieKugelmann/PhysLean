@@ -5,9 +5,9 @@ Authors: Matteo Cipollina
 -/
 
 import Mathlib.Algebra.Lie.OfAssociative
+import PhysLean.Mathematics.LinearAlgebra.BilinearForm
 import PhysLean.Mathematics.Geometry.Manifold.Chart.Smoothness
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
-import PhysLean.Mathematics.LinearAlgebra.BilinearForm
 
 /-!
 # Pseudo-Riemannian Metric in Chart Coordinates
