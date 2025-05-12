@@ -12,8 +12,12 @@ import PhysLean.Mathematics.LinearAlgebra.BilinearForm
 /-!
 # Pseudo-Riemannian Metric in Chart Coordinates
 
-This file defines `chartMetric`, which expresses a pseudo-Riemannian metric in local chart
-coordinates, and proves its transformation properties under coordinate changes.
+This file defines `chartMetric`, which expresses a pseudo-Riemannian metric `g`
+on a manifold `M` in local chart coordinates `e`. It establishes the
+tensor transformation law for `chartMetric` under a change of chart,
+`chartMetric_coord_change`. Auxiliary lemmas concern the smoothness of
+bilinear forms when viewed as maps into function spaces, and properties
+of chart transitions necessary for proving the main transformation result.
 -/
 
 namespace PseudoRiemannianMetric
@@ -24,10 +28,10 @@ open BilinearForm PartialHomeomorph ContinuousLinearMap PartialEquiv ContDiff Ma
 open Filter
 
 variable {E : Type v} {M : Type v} {n : WithTop ℕ∞}
-variable [NormedAddCommGroup E] [NormedSpace ℝ E] --[FiniteDimensional ℝ E]
-variable [TopologicalSpace M] [ChartedSpace E M] --[T2Space M]
-variable {I : ModelWithCorners ℝ E E} --[ModelWithCorners.Boundaryless I]
-variable [inst_mani_smooth : IsManifold I (n + 1) M] -- For C^{n+1} manifold for C^n metric
+variable [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable [TopologicalSpace M] [ChartedSpace E M]
+variable {I : ModelWithCorners ℝ E E}
+variable [inst_mani_smooth : IsManifold I (n + 1) M]
 variable [inst_tangent_findim : ∀ (x : M), FiniteDimensional ℝ (TangentSpace I x)]
 
 noncomputable instance (x : M) : NormedAddCommGroup (TangentSpace I x) :=
@@ -36,9 +40,16 @@ noncomputable instance (x : M) : NormedAddCommGroup (TangentSpace I x) :=
 noncomputable instance (x : M) : NormedSpace ℝ (TangentSpace I x) :=
   show NormedSpace ℝ E from inferInstance
 
-/-- Given a pseudo-Riemannian metric `g` and a partial homeomorphism `e`, computes the metric
-in the chart coordinates. At a point `y` in the target of `e`, the result is the pullback of
-the metric at `e.symm y` by the derivative of `e.symm` at `y`. -/
+/-- Given a pseudo-Riemannian metric `g` on a manifold `M` and a chart `e : PartialHomeomorph M E`,
+`chartMetric g e y` computes the metric tensor in the local coordinates provided by `e`.
+Let `x := e.symm y` be the point on `M` corresponding to chart coordinates `y : E`.
+Let `Df_y := mfderiv I I e.symm y : E →L[ℝ] TangentSpace I x` be the differential of `e.symm` at
+`y`. Then `chartMetric g e y` is the bilinear form on `E` defined as the pullback of `g.val x` by
+`Df_y`. That is, for `v, w : E`, `(chartMetric g e y) v w = g.val x (Df_y v) (Df_y w)`.
+If `(b_i)` is a basis for `E`, then the values `(chartMetric g e y) (b_i) (b_j)` are the
+components `g_{ij}(y)` of the metric `g` at `x` with respect to the basis for `T_xM`
+induced by `(b_i)` via `Df_y`.
+If `y ∉ e.target`, the result is defined as the zero bilinear form. -/
 def chartMetric (g : PseudoRiemannianMetric E E M n I) (e : PartialHomeomorph M E) (y : E) :
     E →L[ℝ] E →L[ℝ] ℝ :=
   letI := Classical.propDecidable
@@ -50,6 +61,8 @@ def chartMetric (g : PseudoRiemannianMetric E E M n I) (e : PartialHomeomorph M 
       BilinearForm.pullback (g.val x) Df)
     (fun _ => (0 : E →L[ℝ] E →L[ℝ] ℝ))
 
+/-- Evaluation of `chartMetric` at `y ∈ e.target`.
+For `v, w : E`, `chartMetric g e y v w = g_x(D(e⁻¹)_y v, D(e⁻¹)_y w)`, where `x = e⁻¹y`. -/
 @[simp]
 lemma chartMetric_apply_of_mem (g : PseudoRiemannianMetric E E M n I) (e : PartialHomeomorph M E)
     {y : E} (hy : y ∈ e.target) (v w : E) :
@@ -59,6 +72,7 @@ lemma chartMetric_apply_of_mem (g : PseudoRiemannianMetric E E M n I) (e : Parti
   simp only [BilinearForm.pullback, ContinuousLinearMap.bilinearComp_apply]
   exact rfl
 
+/-- If `y ∉ e.target`, `chartMetric g e y` is the zero bilinear form. -/
 lemma chartMetric_apply_of_not_mem
     (g : PseudoRiemannianMetric E E M n I)
     (e : PartialHomeomorph M E)
@@ -66,7 +80,10 @@ lemma chartMetric_apply_of_not_mem
     chartMetric g e y v w = 0 := by
   simp only [chartMetric, hy, ↓reduceDIte, ContinuousLinearMap.zero_apply]
 
-/-- The value of a metric in chart coordinates at corresponding points. -/
+/-- The metric `g_x(D(e⁻¹)_y v, D(e⁻¹)_y w)` can be expressed using a second chart `e'`
+via the chain rule for `D(e⁻¹) = D(e'⁻¹) ∘ D(φ)`.
+`x` is a point on the manifold, `y = ex`, `y' = e'x`.
+`φ = e' ∘ e⁻¹` is the transition map. `1 ≤ n`. -/
 lemma chartMetric_at_corresponding_points (g : PseudoRiemannianMetric E E M n I)
     (e e' : PartialHomeomorph M E) (x : M)
     (hx_e : x ∈ e.source) (hx_e' : x ∈ e'.source)
@@ -86,7 +103,9 @@ lemma chartMetric_at_corresponding_points (g : PseudoRiemannianMetric E E M n I)
   rw [h_chain]
   congr
 
-/-- The relationship between chart metrics under coordinate change. -/
+/-- Transformation law for the metric components under chart change.
+    `g_e(y)(v,w) = g_{e'}(y')(D(φ)_y v, D(φ)_y w)`, where `y = ex`, `y' = e'x`, `φ = e' ∘ e⁻¹`.
+    Assumes `e, e'` are in a `C^n` maximal atlas (`1 ≤ n`). -/
 lemma chartMetric_bilinear_pullback (g : PseudoRiemannianMetric E E M n I)
     (e e' : PartialHomeomorph M E) (x : M)
     (hx_e : x ∈ e.source) (hx_e' : x ∈ e'.source)
@@ -114,15 +133,11 @@ lemma chartMetric_bilinear_pullback (g : PseudoRiemannianMetric E E M n I)
   rw [h_phi_def]
   exact chartMetric_at_corresponding_points g e e' x hx_e hx_e' hmani hn1 he he' v w
 
-/--
-The metric tensor transformation law under chart changes.
-
-This theorem states that the representation of a pseudo-Riemannian metric in different charts
-are related by the pullback of the coordinate transformation between these charts.
-Specifically, if `e` and `e'` are two charts containing a point `x_pt`, then the metric
-expressed in chart `e` equals the pullback of the metric expressed in chart `e'`
-by the differential of the transition map from `e` to `e'`.
--/
+/-- Transformation law for `chartMetric`: `(g_e)_y = ((e'∘e⁻¹)^* (g_{e'})_{e'y})_y`.
+Given a metric `g`, and two charts `e, e'`, the representation of `g` in chart `e` at `y = ex`
+is the pullback by the transition map `φ = e' ∘ e⁻¹` (evaluated at `y`)
+of the representation of `g` in chart `e'` (evaluated at `y' = e'x = φy`).
+Assumes charts are `C^n` compatible, `1 ≤ n`. -/
 theorem chartMetric_coord_change (g : PseudoRiemannianMetric E E M n I)
     (e e' : PartialHomeomorph M E)
     (x_pt : M)
