@@ -431,8 +431,7 @@ For a charges `qHd` and `qHu` and a multiset of `U(1)` charges `Q10` and `Q5`, t
   conditions are satisfied.
 -/
 def AnomalyFreeCharges (I : CodimensionOneConfig) (qHd qHu : ℤ) (Q10 Q5 : Multiset ℤ) :
-    Prop :=
-  (0, 0) ∈ ((tenAnomalyFreeSetCharge I Q10).product (fiveAnomalyFreeSetCharge I Q5)).map
+    Prop := (0, 0) ∈ ((tenAnomalyFreeSetCharge I Q10).product (fiveAnomalyFreeSetCharge I Q5)).map
     (fun x => (x.1 + x.2 - (qHu, qHu * qHu) + (qHd, qHd * qHd)))
 
 instance (I : CodimensionOneConfig) (qHd qHu : ℤ) (Q10 Q5 : Multiset ℤ) :
@@ -458,6 +457,29 @@ lemma anomalyFreeCharges_of_anomalyFree (he : 𝓜.NoExotics) (h3 : 𝓜.ThreeCh
     change _ = (0, 0)
     rw [← 𝓜.anomalyCoefficent_sum_of_gaugeAnomalyU1YU1U1_gaugeAnomalyU1YU1U1 hU1 hU1U1]
     ring
+
+
+-- #eval  ((CodimensionOneConfig.same.allowedTenCharges.powerset.filter (fun x => x.card ≤ 3)).val.bind
+--  (fun X => tenAnomalyFreeSetCharge .same X.val)).dedup
+def tenACCCoef : Multiset (ℤ × ℤ) := {(1, -15), (-1, 15), (2, -24), (-2, 24), (1, -9), (-1, 9), (3, -27), (-3, 27), (2, -12), (-2, 12), (1, -3), (-1, 3),
+  (4, -24), (-4, 24), (3, -9), (-3, 9), (2, 0), (-2, 0), (1, 3), (-1, -3), (5, -15), (-5, 15), (-6, 0), (6, 0), (4, 0),
+  (-4, 0), (-5, -15), (5, 15), (3, 9), (-3, -9), (-4, -24), (4, 24), (2, 12), (-2, -12), (-3, -27), (3, 27), (0, 0),
+  (1, 9), (-1, -9), (-1, -15), (-2, -24), (1, 15), (2, 24)}
+
+lemma tenACCCoef_symm :tenACCCoef = tenACCCoef.map (fun x => (-x.1, -x.2)) := by
+  decide
+
+-- #eval ((CodimensionOneConfig.same.allowedBarFiveCharges.product CodimensionOneConfig.same.allowedBarFiveCharges).val.map
+--  (fun (qHu, qHd) => - (qHu, qHu * qHu) + (qHd, qHd * qHd))).dedup
+
+def higgsACCCoe : Multiset (ℤ × ℤ) := {(1, -5), (2, -8), (3, -9), (4, -8), (5, -5), (6, 0), (-1, 5), (1, -3), (2, -4), (3, -3), (4, 0), (5, 5), (-2, 8),
+  (-1, 3), (1, -1), (2, 0), (3, 3), (4, 8), (-3, 9), (-2, 4), (-1, 1), (1, 1), (2, 4), (3, 9), (-4, 8), (-3, 3),
+  (-2, 0), (-1, -1), (1, 3), (2, 8), (-5, 5), (-4, 0), (-3, -3), (-2, -4), (-1, -3), (1, 5), (-6, 0), (-5, -5),
+  (-4, -8), (-3, -9), (-2, -8), (-1, -5), (0, 0)}
+
+abbrev fiveTest (qHu qHd : ℤ) (Q5 : Multiset ℤ) : Prop :=
+  ((fiveAnomalyFreeSetCharge .same Q5).map (fun x => (x - (qHu, qHu * qHu) + (qHd, qHd * qHd)))).toFinset
+  ∩ tenACCCoef.toFinset ≠ ∅
 
 end MatterContent
 

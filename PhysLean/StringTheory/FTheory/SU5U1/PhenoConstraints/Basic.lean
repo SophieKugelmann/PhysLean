@@ -289,6 +289,27 @@ instance : Decidable 𝓜.HasABottomYukawa :=
 
 /-!
 
+## Phenomenological constraints based on fields present
+
+
+`W ⊃ μ 5Hu 5̄Hd + 𝛽ᵢ 5̄Mⁱ5Hu + 𝜆ᵢⱼₖ 5̄Mⁱ 5̄Mʲ 10ᵏ + W¹ᵢⱼₖₗ 10ⁱ 10ʲ 10ᵏ 5̄Mˡ`
+`+ W²ᵢⱼₖ 10ⁱ 10ʲ 10ᵏ 5̄Hd +  W⁴ᵢ 5̄Mⁱ 5̄Hd 5Hu 5Hu`
+
+`K ⊃ K¹ᵢⱼₖ 10ⁱ 10ʲ 5Mᵏ + K²ᵢ 5̄Hu 5̄Hd 10ⁱ`
+-/
+
+abbrev phenoConstraintHuFive (qHu : ℤ) (qHd : ℤ) (Q5 : Multiset ℤ) : Prop :=
+  qHu ≠ qHd ∧ qHu ∉ Q5 ∧ qHd ∉ Q5 ∧ 0 ∉ chargeW4Term Q5 qHd qHu
+
+abbrev phenoConstraintTenFive (Q5 Q10 : Multiset ℤ) : Prop :=
+  0 ∉ chargeW1Term Q5 Q10 ∧ 0 ∉ chargeLambdaTerm Q5 Q10 ∧
+  0 ∉ chargeK1Term Q5 Q10
+
+abbrev phenoConstraintHuTen (qHu : ℤ) (Q10 : Multiset ℤ) : Prop :=
+  0 ∈ chargeYukawaTop Q10 qHu
+
+/-!
+
 ## More sophisticated checks
 -/
 

@@ -46,6 +46,7 @@ instance (T : Finset ℤ) (F : Finset (Multiset ℤ)) :
 
 -/
 
+
 lemma quantaTen_q_not_mem_of_card_two_config_nearestNeighbor (𝓜 : MatterContent .nearestNeighbor)
     (hcard : 𝓜.quantaBarFiveMatter.card = 2) (h : 𝓜.ProtonDecayU1Constrained) :
     ∀ S ∈ ({{-12, -2}, {-12, 13}, {-7, -2}, {-7, 3}, {-7, 8}, {-2, 3},

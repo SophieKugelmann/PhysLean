@@ -260,6 +260,7 @@ import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.ChiralityFlux
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.Fluxes
 import PhysLean.StringTheory.FTheory.SU5U1.NoExotics.HyperchargeFlux
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.Basic
+import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarFour
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarFive
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSeven
 import PhysLean.StringTheory.FTheory.SU5U1.PhenoConstraints.FiveBarSix
