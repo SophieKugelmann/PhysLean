@@ -308,6 +308,10 @@ abbrev phenoConstraintTenFive (Q5 Q10 : Multiset ℤ) : Prop :=
 abbrev phenoConstraintHuTen (qHu : ℤ) (Q10 : Multiset ℤ) : Prop :=
   0 ∈ chargeYukawaTop Q10 qHu
 
+abbrev phenoConstraintHdHuTen (qHd qHu : ℤ) (Q10 : Multiset ℤ) : Prop :=
+  0 ∉ chargeK2Term Q10 qHu qHd ∧
+  0 ∉ chargeW2Term Q10 qHd
+
 /-!
 
 ## More sophisticated checks
