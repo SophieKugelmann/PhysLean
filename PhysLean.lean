@@ -18,7 +18,6 @@ import PhysLean.Electromagnetism.Homogeneous
 import PhysLean.Electromagnetism.LorentzAction
 import PhysLean.Electromagnetism.MaxwellEquations
 import PhysLean.Electromagnetism.Wave
-import PhysLean.Mathematics.LinearAlgebra.BilinearForm
 import PhysLean.Mathematics.Analysis.ContDiff
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Fin
@@ -31,6 +30,7 @@ import PhysLean.Mathematics.Geometry.Manifold.PartialHomeomorph
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Chart
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import PhysLean.Mathematics.Geometry.Metric.Riemannian.Defs
+import PhysLean.Mathematics.LinearAlgebra.BilinearForm
 import PhysLean.Mathematics.LinearMaps
 import PhysLean.Mathematics.List
 import PhysLean.Mathematics.List.InsertIdx
