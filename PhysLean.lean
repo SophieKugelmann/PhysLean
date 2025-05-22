@@ -23,13 +23,13 @@ import PhysLean.Mathematics.Analysis.ContDiff
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.Fin
 import PhysLean.Mathematics.Fin.Involutions
-import PhysLean.Mathematics.Geometry.Manifold.PartialHomeomorph
 import PhysLean.Mathematics.Geometry.Manifold.Chart.Utilities
 import PhysLean.Mathematics.Geometry.Manifold.Chart.BilinearSmoothness
 import PhysLean.Mathematics.Geometry.Manifold.Chart.Smoothness
 import PhysLean.Mathematics.Geometry.Manifold.Chart.CoordinateTransformations
-import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
+import PhysLean.Mathematics.Geometry.Manifold.PartialHomeomorph
 import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Chart
+import PhysLean.Mathematics.Geometry.Metric.PseudoRiemannian.Defs
 import PhysLean.Mathematics.Geometry.Metric.Riemannian.Defs
 import PhysLean.Mathematics.LinearMaps
 import PhysLean.Mathematics.List
