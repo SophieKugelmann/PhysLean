@@ -278,6 +278,7 @@ lemma irreducibleElems_card_eq (I : CodimensionOneConfig) (T : PotentialTerm) :
   revert T I
   decide
 
+
 end ChargeProfile
 
 end PotentialTerm

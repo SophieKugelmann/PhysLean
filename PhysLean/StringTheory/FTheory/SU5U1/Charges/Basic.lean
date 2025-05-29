@@ -105,7 +105,6 @@ lemma subset_of_empty_iff_empty {x : Charges} :
 
 -/
 
-
 /-- The powerset of a charge . Given a charge `x : Charges`
   it's powerset is the finite set of all `Charges` which are subsets of `x`. -/
 def powerset (x : Charges): Finset Charges :=
