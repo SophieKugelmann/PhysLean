@@ -16,6 +16,72 @@ namespace Charges
 
 open PotentialTerm
 
+namespace ChargeTree
+
+inductive Level
+  | leaf
+  | twig
+  | branch
+  | trunk
+  | root
+deriving Repr, DecidableEq, Fintype
+
+
+end ChargeTree
+
+open ChargeTree
+inductive ChargeTree  : Level → Type where
+  | leaf (x : Finset ℤ ) : ChargeTree Level.leaf
+  | twig :  (x : Finset ℤ) →  (ls :  List (ChargeTree Level.leaf)) → ChargeTree Level.twig
+  | branch :  (x : Option ℤ) →  (ls :List  (ChargeTree Level.twig)) → ChargeTree Level.branch
+  | trunk :  (x : Option ℤ) →  (ls :  List (ChargeTree Level.branch)) → ChargeTree Level.trunk
+  | root :  (ls :  List (ChargeTree Level.trunk))  →  ChargeTree Level.root
+
+
+namespace ChargeTree
+
+def fromList (l : List Charges) : ChargeTree .root :=
+  let A1 : List (Option ℤ) := (l.map fun x => x.1).dedup
+  root <| A1.map fun xa => trunk xa <|
+    let B2 := (l.filter fun y => y.1 = xa)
+    let C2 : List (Option ℤ × Finset ℤ × Finset ℤ) := (B2.map fun y => y.2).dedup
+    let A2 : List (Option ℤ) := (C2.map fun x => x.1).dedup
+    A2.map fun xb => branch xb <|
+      let B3 := (C2.filter fun y => y.1 = xb)
+      let C3 : List (Finset ℤ × Finset ℤ) := (B3.map fun y => y.2).dedup
+      let A3 : List (Finset ℤ) := (C3.map fun x => x.1).dedup
+      A3.map fun xc => twig xc <|
+        let B4 := (C3.filter fun y => y.1 = xc)
+        let C4 : List (Finset ℤ) := (B4.map fun y => y.2).dedup
+        C4.map fun xd => leaf xd
+
+def toList (T : ChargeTree .root) : List Charges :=
+  match T with
+  | .root trunks =>
+    trunks.flatMap fun (trunk xT branches) =>
+        branches.flatMap fun (branch xB twigs) =>
+            twigs.flatMap fun (twig xTw leafs) =>
+                leafs.map fun (leaf xL)  => (xT, xB, xTw, xL)
+
+def SupersetOfMem (x : Charges) : {l : Level} → (T : ChargeTree l)  → Prop
+| Level.leaf, .leaf y => x.2.2.2 ⊆ y
+| Level.twig, .twig y leafs => x.2.2.1 ⊆ y ∧ ∃ leaf ∈ leafs, leaf.SupersetOfMem x
+| Level.branch, .branch xo twigs =>
+  xo.toFinset ⊆ x.2.1.toFinset ∧ ∃ twig ∈ twigs, twig.SupersetOfMem x
+| Level.trunk, .trunk xo branches  =>
+  xo.toFinset ⊆ x.1.toFinset ∧ ∃ branch ∈ branches, branch.SupersetOfMem x
+| Level.root, .root trunks =>
+  ∃ trunk ∈ trunks, trunk.SupersetOfMem x
+
+end ChargeTree
+
+def test : ChargeTree Level.root :=
+   root [trunk (some (-3)) [branch (some (-3)) [twig ∅ [leaf ∅]]]]
+
+
+
+
+
 inductive ChargeLeaf
   | leaf : Finset ℤ → ChargeLeaf
 
@@ -135,6 +201,36 @@ def ChargeTree.SupersetOfMem (T : ChargeTree) (x : Charges) : Prop :=
 instance (T : ChargeTree) (x : Charges) : Decidable (T.SupersetOfMem x) :=
   Multiset.decidableExistsMultiset
 
+lemma ChargeTree.supersetOfMem_iff_exists_mem_multiset (T : ChargeTree) (x : Charges) :
+    T.SupersetOfMem x ↔ ∃ y ∈ T.toMultiset, y ⊆ x := by
+  constructor
+  · intro h
+    simp [SupersetOfMem] at h
+    obtain ⟨trunk, hTrunkMem, hbranch⟩ := h
+    match trunk with
+    | .trunk qHd branches =>
+    simp [ChargeTree.toMultiset, ChargeTrunk.SupersetOfMem] at hbranch
+    obtain ⟨hqHu, branch, hBranchMem, htwig⟩ := hbranch
+    match branch with
+    | .branch qHu twigs =>
+    simp [ChargeBranch.SupersetOfMem] at htwig
+    obtain ⟨hqHu, twig, hTwigMem, hleaf⟩ := htwig
+    match twig with
+    | .twig Q5 leafs =>
+    simp [ChargeTwig.SupersetOfMem] at hleaf
+    obtain ⟨hqHu, leaf, hLeafMem, hxs⟩ := hleaf
+    match leaf with
+    | .leaf Q10 =>
+    simp [ChargeLeaf.SupersetOfMem] at hxs
+    use ⟨qHd, qHu, Q5, Q10⟩
+
+
+
+
+
+    sorry
+  · intro h
+    sorry
 
 end Charges
 
