@@ -38,7 +38,6 @@ See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. 
 
 Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/) to ask questions and advice.
 
-
 ## Some parts of PhysLean
 PhysLean _currently_ includes, but is not limited to, the following parts:
 
@@ -60,6 +59,20 @@ __Flavor physics [🗂️](https://physlean.com/docs/PhysLean/Particles/FlavorPh
 
 __Perturbation Theory [🗂️](https://physlean.com/docs/PhysLean/QFT/PerturbationTheory/WickContraction/Basic.html):__ Time-dependent version of Wick's theorem for both fermions and bosons.
 
+## Citing the project
+
+If you want to cite the project as a whole please do so using the following example as a guide: 
+
+```
+The PhysLean Community. PhysLean: Digitalising physics into lean 4. GitHub repository.
+URL: https://github.com/HEPLean/PhysLean.
+```
+
+Please also cite the original paper for the project (which started out as HepLean): 
+```
+Joseph Tooby-Smith, HepLean: Digitalising high energy physics, Computer Physics Communications, Volume 308,
+2025, 109457, ISSN 0010-4655, https://doi.org/10.1016/j.cpc.2024.109457. arXiv:2405.08863
+```
 ## Associated media and publications
 - [📄](https://arxiv.org/abs/2405.08863) Joseph Tooby-Smith,
 __HepLean: Digitalising high energy physics__, Computer Physics Communications, Volume 308,
