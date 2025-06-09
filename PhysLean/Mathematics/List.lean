@@ -78,8 +78,8 @@ lemma dropWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
         List.getElem_cons_zero, implies_true, ite_self]
       split
       next x heq =>
-        simp_all only [decide_eq_true_eq, decide_true, List.dropWhile_cons_of_pos, List.dropWhile_nil,
-          List.length_singleton, le_add_iff_nonneg_left, zero_le, ↓reduceIte,
+        simp_all only [decide_eq_true_eq, decide_true, List.dropWhile_cons_of_pos,
+          List.dropWhile_nil, List.length_singleton, le_add_iff_nonneg_left, zero_le, ↓reduceIte,
           add_tsub_cancel_right, List.eraseIdx_nil]
       next x heq =>
         simp_all only [decide_eq_false_iff_not, decide_false, Bool.false_eq_true, not_false_eq_true,
@@ -112,8 +112,8 @@ lemma dropWile_eraseIdx {I : Type} (P : I → Prop) [DecidablePred P] :
       simp only [List.dropWhile, hPa, decide_true, List.takeWhile, hPb, List.length_cons,
         add_le_add_iff_right, Nat.reduceSubDiff]
       rw [dropWile_eraseIdx]
-      · simp_all only [List.length_cons, List.get_eq_getElem, decide_true, List.takeWhile_cons_of_pos,
-        List.dropWhile_cons_of_pos]
+      · simp_all only [List.length_cons, List.get_eq_getElem, decide_true,
+        List.takeWhile_cons_of_pos, List.dropWhile_cons_of_pos]
       intro i j hij hP
       simpa using h (Fin.succ i) (Fin.succ j) (by simpa using hij) (by simpa using hP)
     · simp only [List.dropWhile, List.takeWhile, hPb, decide_false]

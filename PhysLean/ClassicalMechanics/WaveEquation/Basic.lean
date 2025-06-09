@@ -313,7 +313,8 @@ lemma wave_fderiv_inner_eq_inner_fderiv_proj {f₀ : ℝ → EuclideanSpace ℝ 
     simp only [EuclideanSpace.single_apply, RCLike.inner_apply, MonoidWithZeroHom.map_ite_one_zero,
       mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
     rw [← mul_one (s.unit i), ← smul_eq_mul (s.unit i), ContinuousLinearMap.map_smul]
-    rw [← mul_one (inner ℝ y s.unit), ← smul_eq_mul (inner ℝ y s.unit), ContinuousLinearMap.map_smul]
+    rw [← mul_one (inner ℝ y s.unit), ← smul_eq_mul (inner ℝ y s.unit),
+      ContinuousLinearMap.map_smul]
     simp only [smul_eq_mul, mul_one, PiLp.smul_apply, ← mul_assoc, mul_comm, one_mul]
   · apply DifferentiableAt.inner
     repeat fun_prop
