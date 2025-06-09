@@ -45,58 +45,58 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
   trans (1 : ℂ) • (𝓝(ofFieldOpList [φsΛ ↩Λ φ i none]ᵘᶜ))
   · simp
   congr 1
-  simp only [instCommGroup.eq_1, uncontractedListGet]
-  rw [← List.map_take, take_uncontractedListOrderPos_eq_filter]
-  have h1 : (𝓕 |>ₛ List.map φs.get (List.filter (fun x => decide (↑x < i.1)) φsΛ.uncontractedList))
-        = 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x.val < i.1))⟩ := by
-      simp only [Nat.succ_eq_add_one, ofFinset]
-      congr
-      rw [uncontractedList_eq_sort]
-      have hdup : (List.filter (fun x => decide (x.1 < i.1))
-          (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Nodup := by
-        exact List.Nodup.filter _ (Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
-      have hsort : (List.filter (fun x => decide (x.1 < i.1))
-          (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Sorted (· ≤ ·) := by
-        exact List.Sorted.filter _ (Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
-      rw [← (List.toFinset_sort (· ≤ ·) hdup).mpr hsort]
-      congr
+  · simp only [instCommGroup.eq_1, uncontractedListGet]
+    rw [← List.map_take, take_uncontractedListOrderPos_eq_filter]
+    have h1 : (𝓕 |>ₛ List.map φs.get (List.filter (fun x => decide (↑x < i.1)) φsΛ.uncontractedList))
+          = 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x.val < i.1))⟩ := by
+        simp only [Nat.succ_eq_add_one, ofFinset]
+        congr
+        rw [uncontractedList_eq_sort]
+        have hdup : (List.filter (fun x => decide (x.1 < i.1))
+            (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Nodup := by
+          exact List.Nodup.filter _ (Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
+        have hsort : (List.filter (fun x => decide (x.1 < i.1))
+            (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Sorted (· ≤ ·) := by
+          exact List.Sorted.filter _ (Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
+        rw [← (List.toFinset_sort (· ≤ ·) hdup).mpr hsort]
+        congr
+        ext a
+        simp
+    rw [h1]
+    simp only [Nat.succ_eq_add_one]
+    have h2 : (Finset.filter (fun x => x.1 < i.1) φsΛ.uncontracted) =
+      (Finset.filter (fun x => i.succAbove x < i) φsΛ.uncontracted) := by
       ext a
-      simp
-  rw [h1]
-  simp only [Nat.succ_eq_add_one]
-  have h2 : (Finset.filter (fun x => x.1 < i.1) φsΛ.uncontracted) =
-    (Finset.filter (fun x => i.succAbove x < i) φsΛ.uncontracted) := by
-    ext a
-    simp only [Nat.succ_eq_add_one, Finset.mem_filter, and_congr_right_iff]
-    intro ha
-    simp only [Fin.succAbove]
-    split
-    · apply Iff.intro
-      · intro h
-        omega
-      · intro h
-        rename_i h
-        rw [Fin.lt_def] at h
-        simp only [Fin.coe_castSucc] at h
-        omega
-    · apply Iff.intro
-      · intro h
-        rename_i h'
-        rw [Fin.lt_def]
-        simp only [Fin.val_succ]
-        rw [Fin.lt_def] at h'
-        simp only [Fin.coe_castSucc, not_lt] at h'
-        omega
-      · intro h
-        rename_i h
-        rw [Fin.lt_def] at h
-        simp only [Fin.val_succ] at h
-        omega
-  rw [h2]
-  simp only [exchangeSign_mul_self]
-  congr
-  simp only [Nat.succ_eq_add_one]
-  rw [insertAndContract_uncontractedList_none_map]
+      simp only [Nat.succ_eq_add_one, Finset.mem_filter, and_congr_right_iff]
+      intro ha
+      simp only [Fin.succAbove]
+      split
+      · apply Iff.intro
+        · intro h
+          omega
+        · intro h
+          rename_i h
+          rw [Fin.lt_def] at h
+          simp only [Fin.coe_castSucc] at h
+          omega
+      · apply Iff.intro
+        · intro h
+          rename_i h'
+          rw [Fin.lt_def]
+          simp only [Fin.val_succ]
+          rw [Fin.lt_def] at h'
+          simp only [Fin.coe_castSucc, not_lt] at h'
+          omega
+        · intro h
+          rename_i h
+          rw [Fin.lt_def] at h
+          simp only [Fin.val_succ] at h
+          omega
+    rw [h2]
+    simp only [exchangeSign_mul_self]
+  · congr
+    simp only [Nat.succ_eq_add_one]
+    rw [insertAndContract_uncontractedList_none_map]
 
 /--
   For a list `φs = φ₀…φₙ` of `𝓕.FieldOp`, a Wick contraction `φsΛ` of `φs`, an element `φ` of
