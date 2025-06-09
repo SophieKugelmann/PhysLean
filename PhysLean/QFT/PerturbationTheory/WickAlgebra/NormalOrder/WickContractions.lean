@@ -47,21 +47,22 @@ lemma normalOrder_uncontracted_none (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp
   congr 1
   · simp only [instCommGroup.eq_1, uncontractedListGet]
     rw [← List.map_take, take_uncontractedListOrderPos_eq_filter]
-    have h1 : (𝓕 |>ₛ List.map φs.get (List.filter (fun x => decide (↑x < i.1)) φsΛ.uncontractedList))
-          = 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x.val < i.1))⟩ := by
-        simp only [Nat.succ_eq_add_one, ofFinset]
-        congr
-        rw [uncontractedList_eq_sort]
-        have hdup : (List.filter (fun x => decide (x.1 < i.1))
-            (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Nodup := by
-          exact List.Nodup.filter _ (Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
-        have hsort : (List.filter (fun x => decide (x.1 < i.1))
-            (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Sorted (· ≤ ·) := by
-          exact List.Sorted.filter _ (Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
-        rw [← (List.toFinset_sort (· ≤ ·) hdup).mpr hsort]
-        congr
-        ext a
-        simp
+    have h1 : (𝓕 |>ₛ List.map φs.get (List.filter (fun x => decide (↑x < i.1))
+        φsΛ.uncontractedList))
+        = 𝓕 |>ₛ ⟨φs.get, (φsΛ.uncontracted.filter (fun x => x.val < i.1))⟩ := by
+      simp only [Nat.succ_eq_add_one, ofFinset]
+      congr
+      rw [uncontractedList_eq_sort]
+      have hdup : (List.filter (fun x => decide (x.1 < i.1))
+          (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Nodup := by
+        exact List.Nodup.filter _ (Finset.sort_nodup (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
+      have hsort : (List.filter (fun x => decide (x.1 < i.1))
+          (Finset.sort (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)).Sorted (· ≤ ·) := by
+        exact List.Sorted.filter _ (Finset.sort_sorted (fun x1 x2 => x1 ≤ x2) φsΛ.uncontracted)
+      rw [← (List.toFinset_sort (· ≤ ·) hdup).mpr hsort]
+      congr
+      ext a
+      simp
     rw [h1]
     simp only [Nat.succ_eq_add_one]
     have h2 : (Finset.filter (fun x => x.1 < i.1) φsΛ.uncontracted) =
