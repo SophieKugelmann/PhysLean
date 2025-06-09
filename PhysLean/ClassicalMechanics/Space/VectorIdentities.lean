@@ -203,7 +203,6 @@ lemma div_of_curl_eq_zero (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContD
       exact hf
   all_goals exact hf
 
-
 lemma curl_of_curl (f : Space → EuclideanSpace ℝ (Fin 3)) (hf : ContDiff ℝ 2 f) :
     ∇ × (∇ × f) = ∇ (∇ ⬝ f) - Δ f := by
   unfold laplacian_vec laplacian div grad curl Finset.sum coord basis
