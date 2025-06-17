@@ -342,10 +342,9 @@ lemma mem_minimallyAllowsTermOfFinset_of_minimallyAllowsTerm {S5 S10 : Finset â„
     use (-a), {b, - b - 2 * a}
     simp_all [allowsTermForm]
     omega
-  case' W4 =>
+  case W4 =>
     use (- c - 2 * b), (-b), {c}
     simp_all [allowsTermForm]
-    omega
   case' K1 =>
     use {-a}, {b, - a - b}
     simp_all [allowsTermForm]
