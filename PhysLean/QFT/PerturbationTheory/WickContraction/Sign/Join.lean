@@ -44,7 +44,7 @@ lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldO
     obtain ⟨a, ha, rfl⟩ := h
     apply And.intro
     · simp_all only [signFinset, Finset.mem_filter, Finset.mem_univ, true_and,
-      join_getDual?_apply_uncontractedListEmb, Option.map_eq_none', Option.isSome_map']
+      join_getDual?_apply_uncontractedListEmb, Option.map_eq_none_iff, Option.isSome_map]
       apply And.intro
       · exact uncontractedListEmd_strictMono ha.1
       · apply And.intro
@@ -64,7 +64,7 @@ lemma signFinset_right_map_uncontractedListEmd_eq_filter {φs : List 𝓕.FieldO
     obtain ⟨a, rfl⟩ := h2'
     use a
     simp_all only [signFinset, Finset.mem_filter, Finset.mem_univ,
-      join_getDual?_apply_uncontractedListEmb, Option.map_eq_none', Option.isSome_map', true_and,
+      join_getDual?_apply_uncontractedListEmb, Option.map_eq_none_iff, Option.isSome_map, true_and,
       and_true, and_self]
     apply And.intro
     · have h1 := h.1
@@ -236,18 +236,18 @@ lemma joinSignRightExtra_eq_i_j_finset_eq_if {φs : List 𝓕.FieldOp}
   have hineqfst := singleton_uncontractedEmd_neq_left h (φsucΛ.fstFieldOfContract a)
   have hineqsnd := singleton_uncontractedEmd_neq_left h (φsucΛ.sndFieldOfContract a)
   by_cases hj1 : ¬ uncontractedListEmd (φsucΛ.fstFieldOfContract a) < j
-  · simp only [hj1, false_and, ↓reduceIte, Finset.not_mem_empty, false_or]
+  · simp only [hj1, false_and, ↓reduceIte, Finset.notMem_empty, false_or]
     have hi1 : ¬ uncontractedListEmd (φsucΛ.fstFieldOfContract a) < i := by omega
-    simp only [hi1, false_and, ↓reduceIte, Finset.not_mem_empty, iff_false, not_and, not_or,
+    simp only [hi1, false_and, ↓reduceIte, Finset.notMem_empty, iff_false, not_and, not_or,
       not_forall, not_lt]
     intro hxij h1 h2
     omega
   · have hj1 : uncontractedListEmd (φsucΛ.fstFieldOfContract a) < j := by
       omega
     by_cases hi1 : ¬ i < uncontractedListEmd (φsucΛ.sndFieldOfContract a)
-    · simp only [hi1, and_false, ↓reduceIte, Finset.not_mem_empty, or_false]
+    · simp only [hi1, and_false, ↓reduceIte, Finset.notMem_empty, or_false]
       have hj2 : ¬ j < uncontractedListEmd (φsucΛ.sndFieldOfContract a) := by omega
-      simp only [hj2, false_and, and_false, ↓reduceIte, Finset.not_mem_empty, iff_false, not_and,
+      simp only [hj2, false_and, and_false, ↓reduceIte, Finset.notMem_empty, iff_false, not_and,
         not_or, not_forall, not_lt]
       intro hxij h1 h2
       omega
@@ -255,7 +255,7 @@ lemma joinSignRightExtra_eq_i_j_finset_eq_if {φs : List 𝓕.FieldOp}
         omega
       simp only [hj1, true_and, hi1, and_true]
       by_cases hi2 : ¬ uncontractedListEmd (φsucΛ.fstFieldOfContract a) < i
-      · simp only [hi2, and_false, ↓reduceIte, Finset.not_mem_empty, or_self, iff_false, not_and,
+      · simp only [hi2, and_false, ↓reduceIte, Finset.notMem_empty, or_self, iff_false, not_and,
         not_or, not_forall, not_lt]
         by_cases hj3 : ¬ j < uncontractedListEmd (φsucΛ.sndFieldOfContract a)
         · omega
@@ -271,7 +271,7 @@ lemma joinSignRightExtra_eq_i_j_finset_eq_if {φs : List 𝓕.FieldOp}
       · have hi2 : uncontractedListEmd (φsucΛ.fstFieldOfContract a) < i := by omega
         simp only [hi2, and_true, ↓reduceIte, Finset.mem_singleton]
         by_cases hj3 : ¬ j < uncontractedListEmd (φsucΛ.sndFieldOfContract a)
-        · simp only [hj3, ↓reduceIte, Finset.not_mem_empty, false_or]
+        · simp only [hj3, ↓reduceIte, Finset.notMem_empty, false_or]
           apply Iff.intro
           · intro h
             omega

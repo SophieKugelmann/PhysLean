@@ -75,7 +75,7 @@ lemma fromSingleT_symm_pure {c : S.C} (p : Pure S ![c]) :
     erw [lift.map_tprod S.FD]
   congr
   funext i
-  simp [lift.discreteFunctorMapEqIso, Pure.fromSingleP]
+  simp [lift.linearIsoOfEq, Pure.fromSingleP]
   change (ConcreteCategory.hom ((FD S).map (eqToHom _))) (p _) = p 0
   apply Pure.congr_right
   ext
@@ -330,9 +330,9 @@ lemma fromSingleT_contr_fromPairT_tmul {c c2 : S.C}
     simp only [map_smul, prodT_default_right, LinearMap.smul_apply]
     rw [fromSingleTContrFromPairT_tmul]
     simp only [Nat.reduceAdd, Nat.succ_eq_add_one, Fin.isValue, Monoidal.tensorUnit_obj,
-      Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
-      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      Functor.comp_obj, Discrete.functor_obj_eq_as, Function.comp_apply, map_smul]
+      Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
+      Action.FunctorCategoryEquivalence.functor_obj_obj, Functor.comp_obj,
+      Discrete.functor_obj_eq_as, Function.comp_apply, map_smul]
     congr 1
     rw [prodT_swap, permT_permT]
     simp only [Fin.isValue, Nat.add_zero, CompTriple.comp_eq, prodT_default_right, permT_permT]
@@ -406,6 +406,7 @@ lemma fromPairTContr_tmul_tmul {c c1 c2 : S.C}
     change x1 ⊗ₜ[k] ((S.contr.app (Discrete.mk (c))) (x2 ⊗ₜ[k] y1) • y2)
   simp [tmul_smul]
 
+set_option maxHeartbeats 400000 in
 lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : S.C)
     (x1 : (S.FD.obj (Discrete.mk c1)).V)
     (x2 : (S.FD.obj (Discrete.mk c)).V)
@@ -458,8 +459,9 @@ lemma fromPairT_contr_fromPairT_eq_fromPairTContr_tmul (c c1 c2 : S.C)
   conv_lhs => simp only [prodLeftMap_id, CompTriple.comp_eq]
   conv_rhs => rw [fromPairTContr_tmul_tmul]
   conv_rhs => rw [fromPairT_tmul]
-  simp
+  simp only [permT_permT, map_smul]
 
+set_option maxHeartbeats 400000 in
 lemma fromPairT_contr_fromPairT_eq_fromPairTContr (c c1 c2 : S.C)
     (x : (S.FD.obj (Discrete.mk c1)).V ⊗[k] (S.FD.obj (Discrete.mk c)).V)
     (y : (S.FD.obj (Discrete.mk (S.τ c))).V ⊗[k] (S.FD.obj (Discrete.mk c2)).V) :
@@ -508,9 +510,7 @@ lemma fromPairT_basis_repr {c c1 : S.C}
   apply TensorProduct.induction_on
   · simp [P]
   · intro x y
-    simp only [Action.instMonoidalCategory_tensorObj_V, Nat.succ_eq_add_one, Nat.reduceAdd,
-      Fin.isValue, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-      Action.FunctorCategoryEquivalence.functor_obj_obj, Basis.tensorProduct_repr_tmul_apply,
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Basis.tensorProduct_repr_tmul_apply,
       smul_eq_mul, P]
     conv_lhs =>
       left
@@ -590,10 +590,8 @@ lemma fromConstPair_whiskerLeft {c1 c2 c2' : S.C} (h : c2 = c2')
     ((S.FD.obj ({ as := c1 } : Discrete S.C) ◁ S.FD.map (Discrete.eqToHom (h))))) =
     permT id (And.intro (Function.bijective_id) (by simp [h])) (fromConstPair v) := by
   rw [fromConstPair]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Action.instMonoidalCategory_tensorUnit_V,
-    Action.instMonoidalCategory_tensorObj_V, Action.comp_hom,
-    Action.instMonoidalCategory_whiskerLeft_hom, ModuleCat.hom_comp, LinearMap.coe_comp,
-    Function.comp_apply]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Action.comp_hom, ModuleCat.hom_comp,
+    LinearMap.coe_comp, Function.comp_apply]
   change fromPairT (TensorProduct.map LinearMap.id (S.FD.map (eqToHom (by rw [h]))).hom.hom' _) = _
   rw [fromPairT_map_right h]
   rfl
@@ -605,9 +603,8 @@ lemma fromConstPair_braid {c1 c2 : S.C}
     permT ![1, 0] (And.intro (by decide) (fun i => by fin_cases i <;> simp))
       (fromConstPair v) := by
   rw [fromConstPair]
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Action.instMonoidalCategory_tensorUnit_V,
-    Action.instMonoidalCategory_tensorObj_V, Action.comp_hom, Action.β_hom_hom, ModuleCat.hom_comp,
-    LinearMap.coe_comp, Function.comp_apply, Fin.isValue]
+  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Action.comp_hom, Action.β_hom_hom,
+    ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply, Fin.isValue]
   change fromPairT (TensorProduct.comm k _ _ _) = _
   rw [fromPairT_comm]
   rfl
@@ -811,7 +808,8 @@ lemma actionT_fromConstTriple {c1 c2 c3 : S.C}
 -/
 
 /-- A general constant node. -/
-def fromConst {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c)) :
+noncomputable def fromConst {n : ℕ} {c : Fin n → S.C}
+    (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c)) :
     Tensor S c := (T.hom (1 : k))
 
 /-!
@@ -826,9 +824,7 @@ Tensors constructed from morphisms are invariant under the group action.
 @[simp]
 lemma actionT_fromConst {n : ℕ} {c : Fin n → S.C} (T : 𝟙_ (Rep k G) ⟶ S.F.obj (OverColor.mk c))
     (g : G) : g • fromConst T = fromConst T:= by
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, actionT_eq,
-    Action.instMonoidalCategory_tensorObj_V, Action.instMonoidalCategory_tensorUnit_V,
-    fromConstPair]
+  simp only [actionT_eq]
   change ((T.hom ≫ ModuleCat.ofHom ((S.F.obj _).ρ g))) _ = _
   erw [← T.comm g]
   simp [fromConst]

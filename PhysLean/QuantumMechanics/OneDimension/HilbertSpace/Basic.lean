@@ -3,15 +3,8 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.SpecialFunctions.PhysHermite
-import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 import Mathlib.MeasureTheory.Function.L2Space
-import Mathlib.Analysis.Fourier.FourierTransform
-import Mathlib.Analysis.Fourier.Inversion
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
-import PhysLean.Mathematics.SpecialFunctions.PhysHermite
-import Mathlib.Analysis.Convolution
-import Mathlib.Algebra.Star.Basic
+import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 /-!
 
 # Hilbert space for one dimension quantum mechanics
@@ -74,7 +67,7 @@ lemma coe_mk_ae {f : ℝ → ℂ} (hf : MemHS f) : (mk hf : ℝ → ℂ) =ᵐ[Me
   AEEqFun.coeFn_mk f hf.1
 
 lemma inner_mk_mk {f g : ℝ → ℂ} {hf : MemHS f} {hg : MemHS g} :
-    inner (mk hf) (mk hg) = ∫ x : ℝ, starRingEnd ℂ (f x) * g x := by
+    inner ℂ (mk hf) (mk hg) = ∫ x : ℝ, starRingEnd ℂ (f x) * g x := by
   apply MeasureTheory.integral_congr_ae
   filter_upwards [coe_mk_ae hf, coe_mk_ae hg] with _ hf hg
   simp [hf, hg, mul_comm]
@@ -275,3 +268,6 @@ lemma exp_abs_mul_abs_mul_gaussian_integrable (f : ℝ → ℂ) (hf : MemHS f) (
       rw [abs_mul, abs_of_nonneg hx]
 
 end HilbertSpace
+end
+end OneDimension
+end QuantumMechanics

@@ -3,10 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhi Kai Pong, Tomáš Skřivan, Joseph Tooby-Smith
 -/
-import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
-import Mathlib.Analysis.Calculus.ContDiff.Defs
-import Mathlib.Tactic.FunProp.Differentiable
 import PhysLean.Meta.TODO.Basic
 /-!
 # fderiv currying lemmas
@@ -14,8 +11,8 @@ import PhysLean.Meta.TODO.Basic
 Various lemmas related to fderiv on curried/uncurried functions.
 
 -/
-variable {𝕜 : Type} [NontriviallyNormedField 𝕜]
-    {X Y Z : Type} [NormedAddCommGroup X] [NormedSpace 𝕜 X]
+variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
+    {X Y Z : Type*} [NormedAddCommGroup X] [NormedSpace 𝕜 X]
     [NormedAddCommGroup Y] [NormedSpace 𝕜 Y]
     [NormedAddCommGroup Z] [NormedSpace 𝕜 Z]
 

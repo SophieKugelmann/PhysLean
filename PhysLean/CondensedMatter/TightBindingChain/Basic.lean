@@ -3,12 +3,10 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Meta.TODO.Basic
-import Mathlib.Analysis.InnerProductSpace.PiL2
 import PhysLean.Meta.Informal.Basic
 import PhysLean.Meta.Informal.SemiFormal
+import PhysLean.Meta.Linters.Sorry
 import PhysLean.QuantumMechanics.FiniteTarget.HilbertSpace
-import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 /-!
 
 # The tight binding chain
@@ -90,15 +88,17 @@ lemma localizedComp_apply_localizedState (m n p : Fin T.N) :
   rw [localizedComp, LinearMap.coe_mk, AddHom.coe_mk,
     orthonormal_iff_ite.mp T.localizedState_orthonormal n p, ite_smul, one_smul, zero_smul]
 
-/-- The Hamiltonian of the tight binding chain is given by
-  `E₀ ∑ n, |n⟩⟨n| - t ∑ n, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)`, with periodic
-  boundary conditions. -/
+/-- The Hamiltonian of the tight binding chain with periodic
+  boundary conditions is given by `E₀ ∑ n, |n⟩⟨n| - t ∑ n, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)`.
+  The periodic boundary conditions is manifested by the `+` in `n + 1` being
+  within `Fin T.N` (that is modulo `T.N`). -/
 noncomputable def hamiltonian : T.HilbertSpace →ₗ[ℂ] T.HilbertSpace :=
   T.E0 • ∑ n : Fin T.N, |n⟩⟨n| - T.t • ∑ n : Fin T.N, (|n⟩⟨n + 1| + |n + 1⟩⟨n|)
 
 /-- The hamiltonian of the tight binding chain is hermitian. -/
-semiformal_result "BUEDT" hamiltonian_hermitian (ψ φ : T.HilbertSpace) :
-    ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ
+@[sorryful]
+lemma hamiltonian_hermitian (ψ φ : T.HilbertSpace) :
+    ⟪T.hamiltonian ψ, φ⟫_ℂ = ⟪ψ, T.hamiltonian φ⟫_ℂ := by sorry
 
 /-- The Hamiltonian applied to the localized state `|n⟩` gives
   `T.E0 • |n⟩ - T.t • (|n + 1⟩ + |n - 1⟩)`. -/
@@ -303,8 +303,9 @@ noncomputable def energyEigenstate (k : T.QuantaWaveNumber) : T.HilbertSpace :=
   ∑ n : Fin T.N, Complex.exp (Complex.I * k * n * T.a) • |n⟩
 
 /-- The energy eigenstates of the tight binding chain are orthogonal. -/
-semiformal_result "BUDDT" energyEigenstate_orthogonal :
-  Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0
+@[sorryful]
+lemma energyEigenstate_orthogonal :
+    Pairwise fun k1 k2 => ⟪T.energyEigenstate k1, T.energyEigenstate k2⟫_ℂ = 0 := by sorry
 
 /-- The energy eigenvalue of the tight binding chain for a `k` in `QuantaWaveNumber` is
   `E0 - 2 * t * Real.cos (k * T.a)`. -/
@@ -366,3 +367,4 @@ lemma hamiltonian_energyEigenstate (k : T.QuantaWaveNumber) :
   ring_nf
 
 end TightBindingChain
+end CondensedMatter

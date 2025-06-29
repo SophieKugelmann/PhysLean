@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.TensorSpecies.Basic
+import Mathlib.GroupTheory.GroupAction.Ring
 /-!
 
 # Products of tensors.
@@ -163,14 +164,11 @@ lemma μ_toTensor_tmul_toTensor {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.
     PiTensorProduct.tprod k (fun | Sum.inl i => t i | Sum.inr i => t1 i) := by
   change lift.μModEquiv _ _ _ (t.toTensor ⊗ₜ t1.toTensor) = _
   rw [lift.μModEquiv]
-  simp only [lift.objObj'_V_carrier, OverColor.instMonoidalCategoryStruct_tensorObj_left,
-    OverColor.instMonoidalCategoryStruct_tensorObj_hom, Action.instMonoidalCategory_tensorObj_V,
-    Functor.id_obj, Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj]
+  simp only [lift.toRep_V_carrier, Functor.id_obj]
   rw [LinearEquiv.trans_apply]
   rw [toTensor, toTensor]
   rw [PhysLean.PiTensorProduct.tmulEquiv_tmul_tprod]
-  simp only [PiTensorProduct.congr_tprod]
+  simp only [tensorObj_of_left, tensorObj_of_hom, PiTensorProduct.congr_tprod]
   congr
   funext i
   match i with
@@ -190,7 +188,7 @@ lemma μ_toTensor_tmul_toTensor {n1 n2} {c : Fin n1 → S.C} {c1 : Fin n2 → S.
   the component of `p` in the direction `b`.
 
   For example, if `p = v ⊗ₜ w` and `b = ⟨0, 1⟩` then `component p b = v⁰ ⊗ₜ w¹`. -/
-def component {n : ℕ} {c : Fin n → S.C} (p : Pure S c) (b : ComponentIdx c) : k :=
+noncomputable def component {n : ℕ} {c : Fin n → S.C} (p : Pure S c) (b : ComponentIdx c) : k :=
     ∏ i, (S.basis (c i)).repr (p i) (b i)
 
 lemma component_eq {n : ℕ} {c : Fin n → S.C} (p : Pure S c) (b : ComponentIdx c) :
@@ -453,8 +451,8 @@ lemma actionT_eq {g : G} {t : S.Tensor c} : g • t = (S.F.obj (OverColor.mk c))
 lemma actionT_pure {g : G} {p : Pure S c} :
     g • p.toTensor = Pure.toTensor (g • p) := by
   rw [actionT_eq, Pure.toTensor]
-  simp only [F_def, lift, lift.obj', LaxBraidedFunctor.of_toFunctor]
-  rw [OverColor.lift.objObj'_ρ_tprod]
+  simp only [F_def, lift, lift.toRepFunc, LaxBraidedFunctor.of_toFunctor]
+  rw [lift.toRep_ρ_tprod]
   rfl
 
 @[simp]

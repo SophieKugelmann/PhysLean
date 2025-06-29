@@ -3,9 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.Fin.Involutions
 import PhysLean.QFT.PerturbationTheory.WickContraction.ExtractEquiv
-import PhysLean.QFT.PerturbationTheory.WickContraction.Involutions
 /-!
 
 # Cardinality of Wick contractions
@@ -31,7 +29,8 @@ lemma wickContraction_card_eq_sum_zero_none_isSome : Fintype.card (WickContracti
 lemma wickContraction_zero_none_card :
     Fintype.card {c : WickContraction n.succ // ¬ (c.getDual? 0).isSome} =
     Fintype.card (WickContraction n) := by
-  simp only [succ_eq_add_one, Bool.not_eq_true, Option.not_isSome, Option.isNone_iff_eq_none]
+  simp only [succ_eq_add_one, Bool.not_eq_true, Option.isSome_eq_false_iff,
+    Option.isNone_iff_eq_none]
   symm
   exact Fintype.card_of_bijective (insertAndContractNat_bijective 0)
 

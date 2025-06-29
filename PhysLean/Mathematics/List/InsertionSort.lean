@@ -3,7 +3,7 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.List.InsertIdx
+import PhysLean.Mathematics.List
 /-!
 # List lemmas
 
@@ -268,7 +268,7 @@ lemma insertionSortEquiv_commute {α : Type} (r : α → α → Prop) [Decidable
         decide_not]
       congr
       funext c
-      simp only [Bool.iff_self_and, Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]
+      simp only [Bool.eq_self_and, Bool.not_eq_eq_eq_not, Bool.not_true, decide_eq_false_iff_not]
       intro hbc hac
       refine hbc ?_
       exact IsTrans.trans _ _ _ hrba hac

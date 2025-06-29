@@ -156,7 +156,6 @@ lemma exists_join_singleton_of_card_ge_zero {φs : List 𝓕.FieldOp} (φsΛ : W
     apply And.intro
     · simp only [id_eq, eq_mpr_eq_cast, φsucΛ]
       rw [eqTimeOnly_congr (φs := [(φsΛ.subContraction {a} (by simpa using ha))]ᵘᶜ)]
-      simp only [id_eq, eq_mpr_eq_cast]
       exact quotContraction_eqTimeOnly h1 _ _
       rw [← subContraction_singleton_eq_singleton]
     · simp only [id_eq, eq_mpr_eq_cast, card_congr, φsucΛ]
@@ -393,7 +392,7 @@ lemma join_eqTimeContractSet {φs : List 𝓕.FieldOp} (φsΛ : WickContraction 
 lemma eqTimeContractSet_of_not_haveEqTime {φs : List 𝓕.FieldOp} {φsΛ : WickContraction φs.length}
     (h : ¬ HaveEqTime φsΛ) : eqTimeContractSet φsΛ = ∅ := by
   ext a
-  simp only [Finset.not_mem_empty, iff_false]
+  simp only [Finset.notMem_empty, iff_false]
   by_contra hn
   rw [haveEqTime_iff_finset] at h
   simp only [Fin.getElem_fin, not_exists, not_and] at h
@@ -451,7 +450,7 @@ lemma subContraction_eqTimeContractSet_not_empty_of_haveEqTime
   simp only [ne_eq]
   erw [Subtype.eq_iff]
   simp only [subContraction, empty]
-  rw [Finset.eq_empty_iff_forall_not_mem]
+  rw [Finset.eq_empty_iff_forall_notMem]
   simp only [HaveEqTime, Fin.getElem_fin, exists_and_left, exists_prop] at h
   obtain ⟨i, j, hij, h1, h2⟩ := h
   simp only [not_forall, Decidable.not_not]

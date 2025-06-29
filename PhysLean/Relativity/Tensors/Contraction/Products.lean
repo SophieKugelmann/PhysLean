@@ -182,8 +182,7 @@ lemma Pure.contrPCoeff_natAdd {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
     contrPCoeff (Fin.natAdd n1 i) (Fin.natAdd n1 j)
     (by simp_all [Fin.ext_iff]) (p1.prodP p)
     = contrPCoeff i j hij p := by
-  simp only [contrPCoeff, Function.comp_apply, Monoidal.tensorUnit_obj,
-    Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+  simp only [contrPCoeff, Function.comp_apply, Monoidal.tensorUnit_obj, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     Functor.comp_obj, Discrete.functor_obj_eq_as, prodP_apply_natAdd]
   conv_lhs => erw [S.contr_congr
@@ -204,8 +203,7 @@ lemma Pure.contrPCoeff_castAdd {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
     contrPCoeff (Fin.castAdd n1 i) (Fin.castAdd n1 j)
     (by simp_all [Fin.ext_iff]) (p.prodP p1)
     = contrPCoeff i j hij p := by
-  simp only [contrPCoeff, Function.comp_apply, Monoidal.tensorUnit_obj,
-    Action.instMonoidalCategory_tensorUnit_V, Equivalence.symm_inverse,
+  simp only [contrPCoeff, Function.comp_apply, Monoidal.tensorUnit_obj, Equivalence.symm_inverse,
     Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
     Functor.comp_obj, Discrete.functor_obj_eq_as, prodP_apply_castAdd]
   conv_lhs => erw [S.contr_congr _ ((c i)) (by simp)]
@@ -238,7 +236,7 @@ lemma Pure.prodP_dropPair {n n1 : ℕ} {c : Fin (n + 1 + 1) → S.C}
     simp [map_map_apply]
   | Sum.inr m =>
     simp only [finSumFinEquiv_apply_right]
-    rw [← congr_right (p1.prodP p) _ (Fin.natAdd (n1) (dropPairEmb i j m))
+    rw [← congr_right (p1.prodP p) _ (Fin.natAdd n1 (dropPairEmb i j m))
       (by rw [dropPairEmb_comm_natAdd i j hij.1])]
     simp [map_map_apply]
 

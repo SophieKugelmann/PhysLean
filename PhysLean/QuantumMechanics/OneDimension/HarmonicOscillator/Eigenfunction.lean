@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.QuantumMechanics.OneDimension.HarmonicOscillator.Basic
 import Mathlib.Topology.Algebra.Polynomial
+import PhysLean.Mathematics.SpecialFunctions.PhysHermite
 /-!
 
 # Eigenfunction of the Harmonic Oscillator
@@ -18,10 +19,7 @@ namespace HarmonicOscillator
 
 variable (Q : HarmonicOscillator)
 
-open Nat
-open PhysLean
-open HilbertSpace
-open MeasureTheory
+open Nat PhysLean HilbertSpace MeasureTheory Constants
 
 /-- The `n`th eigenfunction of the Harmonic oscillator is defined as the function `ℝ → ℂ`
   taking `x : ℝ` to

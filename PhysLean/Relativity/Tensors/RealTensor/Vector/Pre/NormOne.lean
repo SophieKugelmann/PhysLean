@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.Tensors.RealTensor.Vector.Pre.Contraction
-import Mathlib.GroupTheory.GroupAction.Blocks
 /-!
 
 # Lorentz vectors with norm one
@@ -44,9 +43,7 @@ variable (v w : NormOne d)
 /-- The negative of a `NormOne` as a `NormOne`. -/
 def neg : NormOne d := ⟨- v, by
   rw [mem_iff]
-  simp only [Action.instMonoidalCategory_tensorUnit_V, Action.instMonoidalCategory_tensorObj_V,
-    CategoryTheory.Equivalence.symm_inverse, Action.functorCategoryEquivalence_functor,
-    Action.FunctorCategoryEquivalence.functor_obj_obj, tmul_neg, neg_tmul, neg_neg]
+  simp only [tmul_neg, neg_tmul, neg_neg]
   exact v.2⟩
 
 /-- The first column of a Lorentz matrix as a `NormOneLorentzVector`. -/
@@ -57,13 +54,13 @@ def _root_.LorentzGroup.toNormOne (Λ : LorentzGroup d) : NormOne d :=
 
 lemma _root_.LorentzGroup.toNormOne_inl (Λ : LorentzGroup d) :
     (LorentzGroup.toNormOne Λ).val.val (Sum.inl 0) = Λ.1 (Sum.inl 0) (Sum.inl 0) := by
-  simp only [Fin.isValue, LorentzGroup.toNormOne_coe_val, Finsupp.single, one_ne_zero, ↓reduceIte,
+  simp [Fin.isValue, LorentzGroup.toNormOne_coe_val, Finsupp.single, one_ne_zero, ↓reduceIte,
     Finsupp.coe_mk, Matrix.mulVec_single, MulOpposite.op_one, Pi.smul_apply, Matrix.transpose_apply,
     one_smul]
 
 lemma _root_.LorentzGroup.toNormOne_inr (Λ : LorentzGroup d) (i : Fin d) :
     (LorentzGroup.toNormOne Λ).val.val (Sum.inr i) = Λ.1 (Sum.inr i) (Sum.inl 0) := by
-  simp only [LorentzGroup.toNormOne_coe_val, Finsupp.single, one_ne_zero, ↓reduceIte, Fin.isValue,
+  simp [LorentzGroup.toNormOne_coe_val, Finsupp.single, one_ne_zero, ↓reduceIte, Fin.isValue,
     Finsupp.coe_mk, Matrix.mulVec_single, MulOpposite.op_one, Pi.smul_apply, Matrix.transpose_apply,
     one_smul]
 

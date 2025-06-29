@@ -3,9 +3,9 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.Mathematics.PiTensorProduct
-import Mathlib.RepresentationTheory.Rep
-import PhysLean.Relativity.Lorentz.Group.Basic
+import Mathlib.Algebra.Lie.OfAssociative
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.LinearAlgebra.Matrix.Trace
 /-!
 
 ## Pauli matrices
@@ -18,8 +18,10 @@ open Complex
 open Matrix
 
 /-- The zeroth Pauli-matrix as a `2 x 2` complex matrix.
-  That is the matrix `!![1, 0; 0, 1]`. -/
-def σ0 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, 1]
+  That is the matrix `!![1, 0; 0, 1]`, which in Lean is more conveniently written `1`. -/
+abbrev σ0 : Matrix (Fin 2) (Fin 2) ℂ := 1
+
+lemma σ0_eq : σ0 = !![1, 0; 0, 1] := one_fin_two
 
 /-- The first Pauli-matrix as a `2 x 2` complex matrix.
   That is, the matrix `!![0, 1; 1, 0]`. -/
@@ -34,10 +36,7 @@ def σ2 : Matrix (Fin 2) (Fin 2) ℂ := !![0, -I; I, 0]
 def σ3 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, -1]
 
 /-- The conjugate transpose of `σ0` is equal to `σ0`. -/
-@[simp]
-lemma σ0_selfAdjoint : σ0ᴴ = σ0 := by
-  rw [eta_fin_two σ0ᴴ]
-  simp [σ0]
+lemma σ0_selfAdjoint : σ0ᴴ = σ0 := by simp
 
 /-- The conjugate transpose of `σ1` is equal to `σ1`. -/
 @[simp]
@@ -57,47 +56,47 @@ lemma σ3_selfAdjoint : σ3ᴴ = σ3 := by
   rw [eta_fin_two σ3ᴴ]
   simp [σ3]
 
+/-! ### Products
+
+These lemmas try to put the terms in numerical order.
+We skip `σ0` since it's just `1` anyway.
+-/
+
+@[simp] lemma σ1_mul_σ1 : σ1 * σ1 = 1 := by simp [σ1, one_fin_two]
+@[simp] lemma σ2_mul_σ2 : σ2 * σ2 = 1 := by simp [σ2, one_fin_two]
+@[simp] lemma σ3_mul_σ3 : σ3 * σ3 = 1 := by simp [σ3, one_fin_two]
+
+@[simp] lemma σ2_mul_σ1 : σ2 * σ1 = -(σ1 * σ2) := by simp [σ1, σ2]
+@[simp] lemma σ3_mul_σ1 : σ3 * σ1 = -(σ1 * σ3) := by simp [σ1, σ3]
+@[simp] lemma σ3_mul_σ2 : σ3 * σ2 = -(σ2 * σ3) := by simp [σ2, σ3]
+
 /-!
 
 ## Traces
 
 -/
 
+@[simp] lemma trace_σ1 : Matrix.trace σ1 = 0 := by simp [σ1]
+@[simp] lemma trace_σ2 : Matrix.trace σ2 = 0 := by simp [σ2]
+@[simp] lemma trace_σ3 : Matrix.trace σ3 = 0 := by simp [σ3]
+
 /-- The trace of `σ0` multiplied by `σ0` is equal to `2`. -/
-@[simp]
-lemma σ0_σ0_trace : Matrix.trace (σ0 * σ0) = 2 := by
-  simp only [σ0, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
-    tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul, Equiv.symm_apply_apply,
-    trace_fin_two_of]
-  norm_num
+lemma σ0_σ0_trace : Matrix.trace (σ0 * σ0) = 2 := by simp
 
 /-- The trace of `σ0` multiplied by `σ1` is equal to `0`. -/
-@[simp]
-lemma σ0_σ1_trace : Matrix.trace (σ0 * σ1) = 0 := by
-  simp [σ0, σ1]
+lemma σ0_σ1_trace : Matrix.trace (σ0 * σ1) = 0 := by simp
 
 /-- The trace of `σ0` multiplied by `σ2` is equal to `0`. -/
-@[simp]
-lemma σ0_σ2_trace : Matrix.trace (σ0 * σ2) = 0 := by
-  simp [σ0, σ2]
+lemma σ0_σ2_trace : Matrix.trace (σ0 * σ2) = 0 := by simp
 
 /-- The trace of `σ0` multiplied by `σ3` is equal to `0`. -/
-@[simp]
-lemma σ0_σ3_trace : Matrix.trace (σ0 * σ3) = 0 := by
-  simp [σ0, σ3]
+lemma σ0_σ3_trace : Matrix.trace (σ0 * σ3) = 0 := by simp
 
 /-- The trace of `σ1` multiplied by `σ0` is equal to `0`. -/
-@[simp]
-lemma σ1_σ0_trace : Matrix.trace (σ1 * σ0) = 0 := by
-  simp [σ1, σ0]
+lemma σ1_σ0_trace : Matrix.trace (σ1 * σ0) = 0 := by simp
 
 /-- The trace of `σ1` multiplied by `σ1` is equal to `2`. -/
-@[simp]
-lemma σ1_σ1_trace : Matrix.trace (σ1 * σ1) = 2 := by
-  simp only [σ1, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
-    tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul, Equiv.symm_apply_apply,
-    trace_fin_two_of]
-  norm_num
+lemma σ1_σ1_trace : Matrix.trace (σ1 * σ1) = 2 := by simp
 
 /-- The trace of `σ1` multiplied by `σ2` is equal to `0`. -/
 @[simp]
@@ -110,22 +109,14 @@ lemma σ1_σ3_trace : Matrix.trace (σ1 * σ3) = 0 := by
   simp [σ1, σ3]
 
 /-- The trace of `σ2` multiplied by `σ0` is equal to `0`. -/
-@[simp]
-lemma σ2_σ0_trace : Matrix.trace (σ2 * σ0) = 0 := by
-  simp [σ2, σ0]
+lemma σ2_σ0_trace : Matrix.trace (σ2 * σ0) = 0 := by simp
 
 /-- The trace of `σ2` multiplied by `σ1` is equal to `0`. -/
-@[simp]
 lemma σ2_σ1_trace : Matrix.trace (σ2 * σ1) = 0 := by
   simp [σ2, σ1]
 
 /-- The trace of `σ2` multiplied by `σ2` is equal to `2`. -/
-@[simp]
-lemma σ2_σ2_trace : Matrix.trace (σ2 * σ2) = 2 := by
-  simp only [σ2, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
-    tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul, Equiv.symm_apply_apply,
-    trace_fin_two_of]
-  norm_num
+lemma σ2_σ2_trace : Matrix.trace (σ2 * σ2) = 2 := by simp
 
 /-- The trace of `σ2` multiplied by `σ3` is equal to `0`. -/
 @[simp]
@@ -133,26 +124,15 @@ lemma σ2_σ3_trace : Matrix.trace (σ2 * σ3) = 0 := by
   simp [σ2, σ3]
 
 /-- The trace of `σ3` multiplied by `σ0` is equal to `0`. -/
-@[simp]
-lemma σ3_σ0_trace : Matrix.trace (σ3 * σ0) = 0 := by
-  simp [σ3, σ0]
+lemma σ3_σ0_trace : Matrix.trace (σ3 * σ0) = 0 := by simp
 
 /-- The trace of `σ3` multiplied by `σ1` is equal to `0`. -/
-@[simp]
-lemma σ3_σ1_trace : Matrix.trace (σ3 * σ1) = 0 := by
-  simp [σ3, σ1]
+lemma σ3_σ1_trace : Matrix.trace (σ3 * σ1) = 0 := by simp
 
 /-- The trace of `σ3` multiplied by `σ2` is equal to `0`. -/
-@[simp]
-lemma σ3_σ2_trace : Matrix.trace (σ3 * σ2) = 0 := by
-  simp [σ3, σ2]
+lemma σ3_σ2_trace : Matrix.trace (σ3 * σ2) = 0 := by simp
 
 /-- The trace of `σ3` multiplied by `σ3` is equal to `2`. -/
-@[simp]
-lemma σ3_σ3_trace : Matrix.trace (σ3 * σ3) = 2 := by
-  simp only [σ3, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
-    tail_cons, zero_smul, empty_vecMul, add_zero, zero_add, empty_mul, Equiv.symm_apply_apply,
-    trace_fin_two_of]
-  norm_num
+lemma σ3_σ3_trace : Matrix.trace (σ3 * σ3) = 2 := by simp
 
 end PauliMatrix
