@@ -1,8 +1,6 @@
 import PhysLean.Electromagnetism.Basic
 import Mathlib.LinearAlgebra.CrossProduct
 
-
-
 def path := Time → Space
 
 noncomputable def velocity (r : path) : Time → Space := deriv r
@@ -17,31 +15,12 @@ structure ChargedParticle where
   q : ℝ
   /-- The mass of the particle -/
   m : ℝ
-  /-- The path of the particle -/
-  r : path
 
   m_pos : 0 < m
 
 
-namespace ChargedParticle
-
-
-@[simp]
-lemma m_neq_zero (p : ChargedParticle) : p.m ≠ 0 := Ne.symm (ne_of_lt p.m_pos)
-
-end ChargedParticle
-
-
 open Electromagnetism
-open ChargedParticle
 open Real
-
-@[simp]
-noncomputable def Force (m : ℝ) (r : path) (t : Time): (Fin 3 → ℝ) := m • ((acceleration r) t)
-
-@[simp]
-noncomputable abbrev F := Force
-
 
 def cross (V W : Space): Space :=
   ↑ (crossProduct V W)
@@ -50,41 +29,42 @@ def cross (V W : Space): Space :=
 /-- The speed of light. This is set to 3 for now as a placeholder.-/
 def c := 3
 
-variable (p : ChargedParticle)
-variable (E : ElectricField)
-variable (B : MagneticField)
-variable (t : Time)
-
-
-axiom LorentzForce:
-  F p.m p.r t = p.q • ((E t (p.r t)) + ((1/c) • cross (velocity p.r t) (B t (p.r t))))
+/-- The EM-System is specified by E, B and p. -/
+structure EM_System where
+  E : ElectricField
+  B : MagneticField
+  p : ChargedParticle
 
 
 
-/-- The equation of motion for a charged particle in a EM-field. -/
-lemma EquationOfMotion : p.m • (acceleration p.r t) = p.q • ((E t (p.r t)) + ((1/c) • cross (velocity p.r t) (B t (p.r t)))):= by
- rw [← LorentzForce]
- rfl
+/-- The equation of motion for a charged particle in an EM-field. -/
+def EquationOfMotion (EM : EM_System) (r : path): Prop := ∀t ,
+EM.p.m • (acceleration r t) = EM.p.q • ((EM.E t (r t)) + ((1/c) • cross (velocity r t) (EM.B t (r t))))
 
 
 /-- The initial conditions for the motion of a particle in EM-field
   specified by a charged particle, an electric field, a magnetic field,
   a starting point and a given initial velocity. -/
 structure InitialConditions where
-  /-- The charged particle. -/
-  p : ChargedParticle
-  /-- The electric field. -/
-  E : ElectricField
-  /-- The magnetic field. -/
-  B : MagneticField
   /-- The initial velocity. -/
   v₀ : Fin 3 → ℝ
   /-- The starting point. -/
   r₀ : Fin 3 → ℝ
 
-/-- The initial conditions that the particle is restricted to a plane with a perpendicular magnetic field and E=0. -/
-structure B_perpendicular_IC extends InitialConditions where
-  prz := ∀ t, p.r t 2  =  r₀ 2
+/-- The conditions that the particle is restricted to a plane with a perpendicular magnetic field and E=0. -/
+structure EM_Special extends EM_System where
+  plane_restriction (IC : InitialConditions) : ∀ r : path, ∀ t, r t 2  =  IC.r₀ 2
   b : ℝ
-  Bz := ∀ t, B t (p.r t) 2  = b
-  E := 0
+  B_perpendicular : ∀ x : Space , ∀ t, B t x 2  = b
+  E_zero: E = 0
+
+namespace EM_Special
+
+/-- Given the initial conditions and certain restrictions named EM_Special, the solution to the equation of motion. -/
+noncomputable def sol (EMS : EM_Special)(IC: InitialConditions) : path := fun t =>
+  let d := EMS.p.m*c/(EMS.p.q*EMS.b)
+  ![d*(IC.v₀ 0)*(sin d⁻¹*t)-d*(IC.v₀ 1)*(cos d⁻¹*t)+(IC.r₀ 0)+d*(IC.v₀ 1),
+    d*(IC.v₀ 0)*(cos d⁻¹*t)+d*(IC.v₀ 1)*(sin d⁻¹*t)+(IC.r₀ 1)+d*(IC.v₀ 0),
+    IC.r₀ 2]
+
+end EM_Special
