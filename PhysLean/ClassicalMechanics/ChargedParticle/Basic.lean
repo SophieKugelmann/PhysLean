@@ -29,7 +29,7 @@ def cross (V W : Space): Space :=
 /-- The speed of light. This is set to 3 for now as a placeholder.-/
 def c := 3
 
-/-- The EM-System is specified by E, B and p. -/
+/-- The EM-System is specified by an electric field 'E', a magnetic field 'B' and a charged particle 'p'. -/
 structure EM_System where
   E : ElectricField
   B : MagneticField
@@ -37,7 +37,7 @@ structure EM_System where
 
 
 
-/-- The equation of motion for a charged particle in an EM-field. -/
+/-- The equation of motion for a charged particle in an Electromagnetic-field. -/
 def EquationOfMotion (EM : EM_System) (r : path): Prop := ∀t ,
 EM.p.m • (acceleration r t) = EM.p.q • ((EM.E t (r t)) + ((1/c) • cross (velocity r t) (EM.B t (r t))))
 
@@ -55,7 +55,7 @@ structure InitialConditions where
 structure EM_Special extends EM_System where
   plane_restriction (IC : InitialConditions) : ∀ r : path, ∀ t, r t 2  =  IC.r₀ 2
   b : ℝ
-  B_perpendicular : ∀ x : Space , ∀ t, B t x 2  = b
+  B_perpendicular : ∀ x : Space , ∀ t, B t x = ![0,0,b]
   E_zero: E = 0
 
 namespace EM_Special
@@ -66,5 +66,33 @@ noncomputable def sol (EMS : EM_Special)(IC: InitialConditions) : path := fun t 
   ![d*(IC.v₀ 0)*(sin d⁻¹*t)-d*(IC.v₀ 1)*(cos d⁻¹*t)+(IC.r₀ 0)+d*(IC.v₀ 1),
     d*(IC.v₀ 0)*(cos d⁻¹*t)+d*(IC.v₀ 1)*(sin d⁻¹*t)+(IC.r₀ 1)+d*(IC.v₀ 0),
     IC.r₀ 2]
+
+
+
+lemma cross_simp (EMS : EM_Special) (r : path) : ∀ t,
+cross (velocity r t) (EMS.B t (r t)) = EMS.b •![velocity r t 1, (-1) * (velocity r t 0), 0] := by
+  simp [cross]
+  intro t
+  have hB : EMS.B  t (r t) = ![0,0,EMS.b] := by
+    apply EMS.B_perpendicular
+  rw [hB, crossProduct]
+  simp
+  rw [mul_comm (velocity r t 1) EMS.b, mul_comm EMS.b (velocity r t 0)]
+
+
+lemma EquationOfMotion_simp (EMS : EM_Special) (r : path) :
+(EquationOfMotion EMS.toEM_System r) ↔ (∀t , EMS.p.m • (acceleration r t) =
+EMS.p.q • (1/c) • EMS.b •![velocity r t 1, (-1) * (velocity r t 0), 0] ) := by
+  constructor
+  · rw [EquationOfMotion]
+    intro h
+    rw [EMS.E_zero] at h
+    simp at h
+    exact h
+  · rw [EquationOfMotion]
+    intro h
+    rw [EMS.E_zero]
+    simp
+    exact h
 
 end EM_Special
