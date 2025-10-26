@@ -35,6 +35,14 @@ lemma γ_zero : γ 0 = 1 := by simp [γ]
 @[simp]
 lemma γ_neg (β : ℝ) : γ (-β) = γ β := by simp [γ]
 
+@[simp]
+lemma γ_det_not_zero (β : ℝ) (hβ : |β| < 1) : (1 - β^2) ≠ 0 := by
+  rw [abs_lt] at hβ
+  by_contra hn
+  have h1 : β ^ 2 = 1 := by linear_combination (norm := ring) (-hn)
+  simp at h1
+  aesop
+
 /-- The Lorentz boost with in the space direction `i` with speed `β` with
   `|β| < 1`. -/
 def boost (i : Fin d) (β : ℝ) (hβ : |β| < 1) : LorentzGroup d :=
@@ -56,8 +64,8 @@ where
     simp only [Fintype.sum_sum_type, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue,
       Finset.sum_singleton]
     rw [minkowskiMatrix.inl_0_inl_0]
-    simp only [Fin.isValue, and_true, one_div, reduceCtorEq, and_false, ↓reduceIte, neg_mul,
-      mul_ite, mul_neg, mul_one, mul_zero, ite_mul, zero_mul, Sum.inr.injEq]
+    simp only [Fin.isValue, and_true, reduceCtorEq, and_false, ↓reduceIte, neg_mul, mul_ite,
+      mul_neg, mul_one, mul_zero, ite_mul, zero_mul, Sum.inr.injEq]
     conv_lhs =>
       enter [2, 2, x]
       rw [minkowskiMatrix.inr_i_inr_i]
@@ -85,7 +93,9 @@ where
         · subst hk
           simp only [Fin.isValue, ↓reduceIte, one_apply_eq]
           ring_nf
-          field_simp [γ, hb1, hb2]
+          simp [γ]
+          rw [hb1]
+          field_simp
         · simp only [Fin.isValue, hk, ↓reduceIte]
           by_cases hk' : k = Sum.inr i
           · simp only [hk', ↓reduceIte, Fin.isValue, ne_eq, reduceCtorEq, not_false_eq_true,
@@ -122,7 +132,9 @@ where
             simp only [Fin.isValue, reduceCtorEq, ↓reduceIte, neg_mul, one_mul, neg_neg, and_true,
               and_self, one_apply_eq]
             ring_nf
-            field_simp [γ, hb1, hb2]
+            simp [γ]
+            rw [hb1]
+            field_simp
           · rw [one_apply]
             simp only [Fin.isValue, reduceCtorEq, ↓reduceIte, Sum.inr.injEq, hk, and_true, and_self,
               neg_mul, one_mul, neg_neg, zero_add]
@@ -136,13 +148,12 @@ where
           rw [one_apply]
           simp [hj']
       · intro b _ hb
-        simp only [Fin.isValue, one_div, neg_mul, reduceCtorEq, and_self, ↓reduceIte,
-          Sum.inr.injEq, false_and, and_false, hb, mul_ite, one_mul, mul_zero, mul_neg, ite_mul,
-          zero_mul, mul_one]
+        simp only [Fin.isValue, reduceCtorEq, false_and, ↓reduceIte, Sum.inr.injEq, neg_mul,
+          one_mul, hb]
         match k with
         | Sum.inl 0 =>
           simp only [Fin.isValue, true_and, neg_neg, reduceCtorEq, false_and, ↓reduceIte,
-            ite_eq_right_iff, neg_eq_zero, mul_eq_zero, inv_eq_zero, or_self_left, and_imp]
+            ite_eq_right_iff, neg_eq_zero, mul_eq_zero, or_self_left, and_imp]
           intro h1 h2
           subst h1 h2
           simp at hb
@@ -183,8 +194,7 @@ lemma boost_transpose_matrix_eq_self (i : Fin d) {β : ℝ} (hβ : |β| < 1) :
 @[simp]
 lemma boost_zero_eq_id (i : Fin d) : boost i 0 (by simp) = 1 := by
   ext j k
-  simp only [boost, Fin.isValue, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, sub_zero,
-    Real.sqrt_one, one_ne_zero, div_self, mul_zero, lorentzGroupIsGroup_one_coe]
+  simp only [boost, Fin.isValue, mul_zero, lorentzGroupIsGroup_one_coe]
   match j, k with
   | Sum.inl 0, Sum.inl 0 => simp [γ]
   | Sum.inl 0, Sum.inr k =>
@@ -201,7 +211,7 @@ lemma boost_zero_eq_id (i : Fin d) : boost i 0 (by simp) = 1 := by
 
 lemma boost_inverse (i : Fin d) {β : ℝ} (hβ : |β| < 1) :
     (boost i β hβ)⁻¹ = boost i (-β) (by simpa using hβ) := by
-  rw [lorentzGroupIsGroup_inv]
+  rw [inv_eq_dual]
   ext j k
   simp only
   rw [minkowskiMatrix.dual_apply]
@@ -211,9 +221,9 @@ lemma boost_inverse (i : Fin d) {β : ℝ} (hβ : |β| < 1) :
     simp [boost]
   | Sum.inl 0, Sum.inr k =>
     rw [minkowskiMatrix.inl_0_inl_0, minkowskiMatrix.inr_i_inr_i]
-    simp only [boost, Fin.isValue, one_div, neg_mul, reduceCtorEq, and_false, ↓reduceIte,
-      Sum.inr.injEq, true_and, and_self, false_and, mul_ite, mul_neg, one_mul, mul_zero, mul_one,
-      even_two, Even.neg_pow, neg_neg, and_true]
+    simp only [boost, Fin.isValue, neg_mul, reduceCtorEq, and_false, ↓reduceIte, Sum.inr.injEq,
+      true_and, and_self, false_and, mul_ite, mul_neg, one_mul, mul_zero, mul_one, neg_neg,
+      and_true]
     split
     · simp
     · simp
@@ -222,13 +232,13 @@ lemma boost_inverse (i : Fin d) {β : ℝ} (hβ : |β| < 1) :
     simp [boost]
   | Sum.inr j, Sum.inr k =>
     rw [minkowskiMatrix.inr_i_inr_i, minkowskiMatrix.inr_i_inr_i]
-    simp only [boost, Fin.isValue, one_div, neg_mul, reduceCtorEq, and_self, ↓reduceIte,
-      Sum.inr.injEq, false_and, and_false, mul_ite, one_mul, mul_one, mul_zero, mul_neg, even_two,
-      Even.neg_pow, neg_neg]
+    simp only [boost, Fin.isValue, neg_mul, reduceCtorEq, and_self, ↓reduceIte, Sum.inr.injEq,
+      false_and, and_false, mul_ite, one_mul, mul_one, mul_zero, mul_neg, neg_neg]
     split
     · simp
       rw [if_pos]
       simp_all [not_true_eq_false, imp_false, IsEmpty.forall_iff]
+      simp_all only
     · rename_i h
       conv_rhs =>
         rw [if_neg (fun a => h (And.symm a))]

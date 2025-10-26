@@ -3,11 +3,9 @@ Copyright (c) 2025 Ammar Husain. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ammar Husain
 -/
-import PhysLean.Meta.TODO.Basic
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.Calculus.Deriv.Add
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import PhysLean.QuantumMechanics.PlanckConstant
+import PhysLean.QuantumMechanics.OneDimension.Operators.Momentum
+import PhysLean.QuantumMechanics.OneDimension.Operators.Position
+
 /-!
 
 # The 1d QM system with general potential
@@ -19,13 +17,6 @@ namespace QuantumMechanics
 namespace OneDimension
 
 open PhysLean HilbertSpace Constants
-
-/-- The momentum operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
-  `ψ` to `- i ℏ ψ'`.
-
-  The notation `Pᵒᵖ` can be used for the momentum operator. -/
-noncomputable def momentumOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
-  fun x ↦ - Complex.I * ℏ * deriv ψ x
 
 private lemma fun_add {α : Type*} (f g : α → ℂ) :
   (fun x ↦ f x) + (fun x ↦ g x) = fun x ↦ f x + g x := by
@@ -47,11 +38,11 @@ lemma momentumOperator_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
   rw [fun_add ((fun x ↦ a1 * (-Complex.I * ↑ℏ * deriv ψ1 x))) _]
   ext x
   have h : deriv ((a1 •ψ1) + (a2 •ψ2)) x = deriv (fun y ↦ ((a1 •ψ1) y) + ((a2 •ψ2) y)) x := rfl
-  rw [h, deriv_add]
+  rw [h, deriv_fun_add]
   have ht1 : deriv (a1 •ψ1) x = deriv (fun y ↦ (a1 •ψ1 y)) x := rfl
   have ht2 : deriv (a2 •ψ2) x = deriv (fun y ↦ (a2 •ψ2 y)) x := rfl
-  rw [ht1, ht2, deriv_const_smul, deriv_const_smul, mul_add]
-  simp only [mul_comm, mul_assoc]
+  rw [ht1, ht2, deriv_fun_const_smul, deriv_fun_const_smul, mul_add]
+  simp only [mul_comm]
   rw [← mul_assoc, ← mul_assoc, ← mul_assoc a1, ← mul_assoc a2, mul_assoc, mul_assoc]
   · rfl
   · exact hψ2_x x
@@ -68,11 +59,6 @@ lemma momentumOperator_sq_linear (a1 a2 : ℂ) (ψ1 ψ2 : ℝ → ℂ)
     a2 • (momentumOperator (momentumOperator ψ2)) := by
   rw [momentumOperator_linear, momentumOperator_linear] <;> assumption
 
-/-- The position operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
-  `ψ` to `x ψ'`. -/
-noncomputable def positionOperator (ψ : ℝ → ℂ) : ℝ → ℂ :=
-  fun x ↦ x * ψ x
-
 /-- The potential operator is defined as the map from `ℝ → ℂ` to `ℝ → ℂ` taking
   `ψ` to `V(x) ψ`. -/
 noncomputable def potentialOperator (V : ℝ → ℝ) (ψ : ℝ → ℂ) : ℝ → ℂ :=
@@ -88,7 +74,7 @@ lemma potentialOperator_linear (V: ℝ → ℝ) (a1 a2 : ℂ) (ψ1 ψ2 : ℝ →
   ext x
   have h: (a1 • ψ1 + a2 • ψ2) x = a1 *ψ1 x + a2 * ψ2 x := rfl
   rw [h, mul_add]
-  simp only [mul_assoc, mul_comm, add_comm]
+  simp only [mul_comm]
   rw [mul_comm,mul_assoc, ← mul_assoc _ a2, mul_comm _ a2, mul_assoc a2, mul_comm (ψ2 x)]
 
 /-- A quantum mechanical system in 1D is specified by a three

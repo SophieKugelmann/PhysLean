@@ -26,7 +26,7 @@ local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 variable (𝕜) in
 /-- Adjoint of a linear map `f` such that `∀ x y, ⟪adjoint 𝕜 f y, x⟫ = ⟪y, f x⟫`.
 
-This computes adjoint of a liner map the same way as `ContinuousLinearMap.adjoint` but it is
+This computes adjoint of a linear map the same way as `ContinuousLinearMap.adjoint` but it is
 defined over `InnerProductSpace'`, which is a generalization of `InnerProductSpace` that provides
 instances for products and function types. These instances make it easier to perform computations
 compared to using the standard `InnerProductSpace` class.
@@ -43,6 +43,12 @@ def adjoint (f : E → F) :=
     choose h
   else 0
 
+lemma HasAdjoint.adjoint_inner_right {f : E → F} (hf : HasAdjoint 𝕜 f f') :
+    ⟪x, f' y⟫ = ⟪f x, y⟫ := by
+  rw [← inner_conj_symm']
+  rw [hf.adjoint_inner_left]
+  rw [inner_conj_symm']
+
 open InnerProductSpace' in
 lemma ContinuousLinearMap.hasAdjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
     HasAdjoint 𝕜 f (fun y => fromL2 𝕜 (((toL2 𝕜) ∘L f ∘L (fromL2 𝕜)).adjoint (toL2 𝕜 y))) where
@@ -50,8 +56,8 @@ lemma ContinuousLinearMap.hasAdjoint [CompleteSpace E] [CompleteSpace F] (f : E 
 
 open InnerProductSpace' in
 lemma adjoint_eq_clm_adjoint [CompleteSpace E] [CompleteSpace F] (f : E →L[𝕜] F) :
-    _root_.adjoint 𝕜 f = fun y => fromL2 𝕜 ((toL2 𝕜 ∘L f ∘L fromL2 𝕜).adjoint (toL2 𝕜 y)) := by
-  funext y; apply ext_inner_right' 𝕜; intro x
+    _root_.adjoint 𝕜 f = fromL2 𝕜 ∘L (toL2 𝕜 ∘L f ∘L fromL2 𝕜).adjoint ∘L (toL2 𝕜) := by
+  ext y; apply ext_inner_right' 𝕜; intro x; simp
   rw [f.hasAdjoint.adjoint_inner_left]
   have h : ∃ f', HasAdjoint 𝕜 f f' := ⟨_,f.hasAdjoint⟩
   simp[_root_.adjoint,h,h.choose_spec.adjoint_inner_left]
@@ -90,36 +96,36 @@ lemma HasAdjoint.prodMk {f : E → F} {g : E → G} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => (f x, g x)) (fun yz => f' yz.1 + g' yz.2) := by
   constructor; intros
-  simp [inner,inner_add_left',
+  simp [inner_add_left',
       hf.adjoint_inner_left, hg.adjoint_inner_left]
 
 lemma HasAdjoint.fst {f : E → F×G} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => (f x).1) (fun y => f' (y, 0)) := by
   constructor; intros
-  simp[inner, hf.adjoint_inner_left]
+  simp[hf.adjoint_inner_left]
 
 lemma HasAdjoint.snd {f : E → F×G} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => (f x).2) (fun z => f' (0, z)) := by
   constructor; intros
-  simp[inner, hf.adjoint_inner_left]
+  simp[hf.adjoint_inner_left]
 
 lemma HasAdjoint.neg {f : E → F} {f'} (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => -f x) (fun y => -f' y) := by
   constructor; intros
-  simp[inner, hf.adjoint_inner_left]
+  simp[hf.adjoint_inner_left]
 
 lemma HasAdjoint.add {f g : E → F} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => f x + g x) (fun y => f' y + g' y) := by
   constructor; intros
-  simp[inner, inner_add_left', inner_add_right',
+  simp[inner_add_left', inner_add_right',
       hf.adjoint_inner_left, hg.adjoint_inner_left]
 
 lemma HasAdjoint.sub {f g : E → F} {f' g'}
     (hf : HasAdjoint 𝕜 f f') (hg : HasAdjoint 𝕜 g g') :
     HasAdjoint 𝕜 (fun x : E => f x - g x) (fun y => f' y - g' y) := by
   constructor; intros
-  simp[inner, sub_eq_add_neg, inner_add_left', inner_add_right',
+  simp[sub_eq_add_neg, inner_add_left', inner_add_right',
       hf.adjoint_inner_left, hg.adjoint_inner_left]
 
 open ComplexConjugate in
@@ -127,11 +133,11 @@ lemma HasAdjoint.smul_left {f : E → F} {f'} (c : 𝕜)
     (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => c • f x) (fun y => (conj c) • f' y) := by
   constructor; intros
-  simp[inner, inner_smul_left', inner_smul_right', hf.adjoint_inner_left]
+  simp[inner_smul_left', inner_smul_right', hf.adjoint_inner_left]
 
 open ComplexConjugate in
 lemma HasAdjoint.smul_right {f : E → 𝕜} {f'} (v : F)
     (hf : HasAdjoint 𝕜 f f') :
     HasAdjoint 𝕜 (fun x : E => f x • v) (fun y => f' (conj ⟪y, v⟫)) := by
   constructor; intros
-  simp[inner, inner_smul_left', inner_smul_right', hf.adjoint_inner_left]
+  simp[inner_smul_right', hf.adjoint_inner_left]

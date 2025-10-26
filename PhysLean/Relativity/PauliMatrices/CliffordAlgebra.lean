@@ -3,7 +3,7 @@ Copyright (c) 2025 Eric Wieser. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eric Wieser
 -/
-import PhysLean.Relativity.PauliMatrices.Matrix
+import PhysLean.Relativity.PauliMatrices.Basic
 import Mathlib.LinearAlgebra.CliffordAlgebra.Basic
 
 /-!
@@ -26,8 +26,13 @@ def ofCliffordAlgebra :
     ⟨∑ i, (LinearMap.proj i).smulRight
       ⟨![σ1, σ2, σ3] i, Algebra.subset_adjoin <| by fin_cases i <;> simp⟩, fun v => by
       ext : 1
-      simp [Fin.sum_univ_three, mul_add, add_mul, smul_mul_smul, ← map_mul, ← map_sub, ← map_add,
-        Algebra.algebraMap_eq_smul_one]
+      simp only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.sum_univ_three,
+        Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, LinearMap.add_apply,
+        LinearMap.coe_smulRight, LinearMap.coe_proj, Function.eval, SetLike.mk_smul_mk,
+        AddMemClass.mk_add_mk, MulMemClass.mk_mul_mk, mul_add, Algebra.mul_smul_comm, add_mul,
+        Algebra.smul_mul_assoc, pauliMatrix_mul_self, σ2_mul_σ1, smul_neg, σ3_mul_σ1, smul_add,
+        σ3_mul_σ2, form_apply, Fin.reduceFinMk, Algebra.algebraMap_eq_smul_one, SetLike.val_smul,
+        OneMemClass.coe_one]
       module⟩
 
 /-- The generators of the Clifford algebra correspond to the elements `σ`. -/

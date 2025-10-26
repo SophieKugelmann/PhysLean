@@ -1,24 +1,31 @@
 
-![PhysLean](./docs/PhysLeanLogo.jpeg)
-<p align="center"> <i><b>
-An open-source, community, project to digitalize results from physics into Lean 4.</b>
-</i>
-</p>
+<div align="center">
+<img src="./docs/PhysLeanLogo.jpeg" alt="PhysLean logo" width="500">
+</div>
 
 
-- [![](https://img.shields.io/badge/Getting-Started-green)](https://physlean.com/GettingStarted.html)
-[![](https://img.shields.io/badge/The-Website-green)](https://physlean.com)
-[![](https://img.shields.io/badge/How_To-Get_Involved-green)](https://physlean.com/GetInvolved.html)
-[![](https://img.shields.io/badge/PhysLean_Zulip-Discussion-green)](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/)
-[![](https://img.shields.io/badge/TODO-List-green)](https://physlean.com/TODOList)
+<div align="center">
 
-- [![](https://img.shields.io/badge/PhysLean-Search-purple)](https://loogle.physlean.com)
+## An open-source, community, project to digitalize results from physics into Lean 4
+
+
+
+[![](https://img.shields.io/badge/Getting-Started-darkgreen)](https://physlean.com/GettingStarted.html)
+[![](https://img.shields.io/badge/The-Website-darkgreen)](https://physlean.com)
+[![](https://img.shields.io/badge/How_To-Get_Involved-darkgreen)](https://physlean.com/GetInvolved.html)
+[![](https://img.shields.io/badge/PhysLean_Zulip-Discussion-darkgreen)](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/)
+[![](https://img.shields.io/badge/TODO-List-darkgreen)](https://physlean.com/TODOList)
+
+[![](https://img.shields.io/badge/PhysLean-Search-purple)](https://loogle.physlean.com)
 [![](https://img.shields.io/badge/PhysLean-Online-purple)](https://live.physlean.com)
 
-- [![](https://img.shields.io/badge/View_The-Stats-blue)](https://physlean.com/Stats)
-[![](https://img.shields.io/badge/Lean-v4.20.1-blue)](https://github.com/leanprover/lean4/releases/tag/v4.20.1)
+ [![](https://img.shields.io/badge/View_The-Stats-blue)](https://physlean.com/Stats)
+[![](https://img.shields.io/badge/Lean-v4.24.0-blue)](https://github.com/leanprover/lean4/releases/tag/v4.24.0)
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/HEPLean/HepLean)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/HEPLean/PhysLean)
+
+</div>
+
 
 ## Aims of this project
 
@@ -41,6 +48,9 @@ See the [Get Involved](https://physlean.com/GetInvolved.html) for more details. 
 📣 or, start formalizing an area that you find intresting.
 
 Feel free to come to the [PhysLean zulip](https://leanprover.zulipchat.com/#narrow/channel/479953-PhysLean/) to ask questions and advice.
+
+> [!NOTE]
+> When making contributing to PhysLean it is much better to do it with small steps. This makes it easier for us to review, and allows you to get feedback sooner.
 
 
 ## Places in the project to start
@@ -110,8 +120,3 @@ or
 - Run `lake exe cache get`. The command `lake` should have been installed when you installed Lean.
 - Run `lake build`.
 - Open the directory (not a single file) in Visual Studio Code (or another Lean compatible code editor).
-
-### Optional extras
-
-- [Lean Copilot](https://github.com/lean-dojo/LeanCopilot) and [LLMLean](https://github.com/cmu-l3/llmlean) allow for the use of large language models in Lean
-- [tryAtEachStep](https://github.com/dwrensha/tryAtEachStep) allows one to apply a tactic, e.g. `exact?` at each step of a lemma in a file to see if it completes the goal. This is useful for golfing proofs.

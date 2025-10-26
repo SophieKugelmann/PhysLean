@@ -11,11 +11,8 @@ import PhysLean.QFT.QED.AnomalyCancellation.VectorLike
 We give a basis of `LinSols` in the odd case. This basis has the special property
 that splits into two planes on which every point is a solution to the ACCs.
 -/
-universe v u
 
-open Nat
-open Finset
-open BigOperators
+open Module Nat Finset BigOperators
 
 namespace PureU1
 
@@ -193,7 +190,7 @@ lemma basis_on_oddFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.coe_castAdd, Fin.coe_natAdd] at h2
       omega
     · rfl
 
@@ -211,7 +208,7 @@ lemma basis!_on_oddShiftFst_other {k j : Fin n} (h : k ≠ j) :
     · rename_i h1 h2
       simp_all
       rw [Fin.ext_iff] at h2
-      simp only [Fin.coe_cast, Fin.coe_castAdd, Fin.coe_natAdd] at h2
+      simp only [Fin.coe_castAdd, Fin.coe_natAdd] at h2
       omega
     rfl
 

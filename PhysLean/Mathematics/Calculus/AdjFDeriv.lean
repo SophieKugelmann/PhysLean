@@ -6,6 +6,7 @@ Authors: Tomas Skrivan
 import Mathlib.Analysis.Calculus.Gradient.Basic
 import PhysLean.Mathematics.FDerivCurry
 import PhysLean.Mathematics.InnerProductSpace.Adjoint
+import PhysLean.Mathematics.InnerProductSpace.Calculus
 /-!
 
 # Adjoint Fréchet derivative
@@ -72,7 +73,7 @@ protected lemma DifferentiableAt.hasAdjFDerivAt [CompleteSpace E] [CompleteSpace
     unfold adjFDeriv
     apply HasAdjoint.congr_adj
     · apply ContinuousLinearMap.hasAdjoint
-    · funext y; rw[adjoint_eq_clm_adjoint]
+    · funext y; simp[adjoint_eq_clm_adjoint]
 
 namespace ContinuousLinearMap
 
@@ -126,8 +127,7 @@ lemma gradient_eq_adjFDeriv
     gradient f x = adjFDeriv 𝕜 f x 1 := by
   apply ext_inner_right 𝕜
   unfold gradient
-  simp [ContinuousLinearMap.adjoint_inner_left,
-        hf.hasAdjFDerivAt.hasAdjoint_fderiv.adjoint_inner_left]
+  simp [hf.hasAdjFDerivAt.hasAdjoint_fderiv.adjoint_inner_left]
 
 attribute [fun_prop] HasAdjFDerivAt.differentiableAt
 
@@ -139,6 +139,9 @@ lemma hasAdjFDerivAt_id (x : E) : HasAdjFDerivAt 𝕜 (fun x : E => x) (fun dx =
 lemma adjFDeriv_id : adjFDeriv 𝕜 (fun x : E => x) = fun _ dx => dx := by
   funext x
   rw[HasAdjFDerivAt.adjFDeriv (hasAdjFDerivAt_id x)]
+
+lemma adjFDeriv_id' : adjFDeriv 𝕜 (id : E → E) = fun _ dx => dx := by
+  exact adjFDeriv_id
 
 lemma hasAdjFDerivAt_const (x : E) (y : F) :
     HasAdjFDerivAt 𝕜 (fun _ : E => y) (fun _ => 0) x where
@@ -191,6 +194,15 @@ lemma adjFDeriv_fst [CompleteSpace E] [CompleteSpace F] [CompleteSpace G]
   apply HasAdjFDerivAt.adjFDeriv
   apply HasAjdFDerivAt.fst hf.hasAdjFDerivAt
 
+@[simp]
+lemma adjFDeriv_prod_fst [CompleteSpace E] [CompleteSpace F] {x : F × E} :
+    adjFDeriv 𝕜 (Prod.fst : F × E → F) x = fun a => (a, 0) := by
+  change adjFDeriv 𝕜 (fun x => (id x).fst) x = _
+  rw [adjFDeriv_fst]
+  funext dy
+  rw [adjFDeriv_id']
+  simp
+
 lemma HasAjdFDerivAt.snd {f : E → F×G} {f'} {x : E} (hf : HasAdjFDerivAt 𝕜 f f' x) :
     HasAdjFDerivAt 𝕜 (fun x => (f x).snd) (fun dz => f' (0, dz)) x where
   differentiableAt := by fun_prop
@@ -203,6 +215,15 @@ lemma adjFDeriv_snd [CompleteSpace E] [CompleteSpace F] [CompleteSpace G]
     adjFDeriv 𝕜 (fun x => (f x).snd) x = fun dy => adjFDeriv 𝕜 f x (0, dy) := by
   apply HasAdjFDerivAt.adjFDeriv
   apply HasAjdFDerivAt.snd hf.hasAdjFDerivAt
+
+@[simp]
+lemma adjFDeriv_prod_snd [CompleteSpace E] [CompleteSpace F] {x : F × E} :
+    adjFDeriv 𝕜 (Prod.snd : F × E → E) x = fun a => (0, a) := by
+  change adjFDeriv 𝕜 (fun x => (id x).snd) x = _
+  rw [adjFDeriv_snd]
+  funext dy
+  rw [adjFDeriv_id']
+  simp
 
 lemma hasAdjFDerivAt_uncurry {f : E → F → G} {xy} {fx' fy'}
     (hf : DifferentiableAt 𝕜 (↿f) xy)
@@ -246,7 +267,7 @@ lemma HasAjdFDerivAt.add {f g : E → F} {f' g'} {x : E}
     HasAdjFDerivAt 𝕜 (fun x => f x + g x) (fun dy => f' dy + g' dy) x where
   differentiableAt := by fun_prop
   hasAdjoint_fderiv := by
-    simp (disch:=fun_prop) [fderiv_add]
+    simp (disch:=fun_prop) [fderiv_fun_add]
     apply hf.hasAdjoint_fderiv.add hg.hasAdjoint_fderiv
 
 lemma adjFDeriv_add [CompleteSpace E] [CompleteSpace F]
@@ -264,7 +285,7 @@ lemma HasAdjFDerivAt.sub
     HasAdjFDerivAt 𝕜 (fun x => f x - g x) (fun dy => f' dy - g' dy) x where
   differentiableAt := by fun_prop
   hasAdjoint_fderiv := by
-    simp (disch:=fun_prop) [fderiv_sub]
+    simp (disch:=fun_prop) [fderiv_fun_sub]
     apply hf.hasAdjoint_fderiv.sub hg.hasAdjoint_fderiv
 
 lemma adjFDeriv_sub [CompleteSpace E] [CompleteSpace F] {f g : E → F} {x : E}
@@ -282,7 +303,7 @@ lemma HasAdjFDerivAt.smul {f : E → F} {g : E → 𝕜} {f' g'}
       (fun dy => conj (g x) • f' dy + g' (conj (inner 𝕜 dy (f x)))) x where
   differentiableAt := by fun_prop
   hasAdjoint_fderiv := by
-    simp (disch:=fun_prop) [fderiv_smul,-inner_conj_symm']
+    simp (disch:=fun_prop) [fderiv_fun_smul,-inner_conj_symm']
     apply HasAdjoint.add
     · apply hf.hasAdjoint_fderiv.smul_left
     · apply hg.hasAdjoint_fderiv.smul_right
@@ -297,3 +318,30 @@ lemma adjFDeriv_smul [CompleteSpace E] [CompleteSpace F]
   apply HasAdjFDerivAt.smul
   apply hf.hasAdjFDerivAt
   apply hg.hasAdjFDerivAt
+
+open InnerProductSpace
+lemma HasAdjFDerivAt.inner {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [InnerProductSpace' ℝ E] (x : E × E) :
+    HasAdjFDerivAt ℝ (fun (x : E × E) => ⟪x.1, x.2⟫_ℝ) (fun y => y • (x.2, x.1)) x where
+  differentiableAt := by fun_prop
+  hasAdjoint_fderiv := by
+    conv =>
+      enter [2]
+      change fun t => fderiv ℝ (fun x => ⟪x.1, x.2⟫_ℝ) x t
+      enter [t]
+      rw [fderiv_inner_apply' (by fun_prop) (by fun_prop)]
+      simp [fderiv_snd, fderiv_fst]
+    constructor
+    intro a b
+    simp [inner_smul_left']
+    conv_lhs =>
+      enter [1]
+      rw [real_inner_comm']
+    ring
+
+lemma adjFDeriv_inner {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace' ℝ E]
+    (x : E × E) :
+    adjFDeriv ℝ (fun (x : E × E) => ⟪x.1, x.2⟫_ℝ) x =
+      fun y => y • (x.2, x.1) := by
+  apply HasAdjFDerivAt.adjFDeriv
+  apply HasAdjFDerivAt.inner

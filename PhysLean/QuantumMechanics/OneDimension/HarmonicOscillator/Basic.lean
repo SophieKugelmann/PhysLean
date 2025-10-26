@@ -3,9 +3,7 @@ Copyright (c) 2025 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import PhysLean.QuantumMechanics.OneDimension.HilbertSpace.Parity
-import PhysLean.Meta.TODO.Basic
-import PhysLean.QuantumMechanics.PlanckConstant
+import PhysLean.QuantumMechanics.OneDimension.Operators.Parity
 /-!
 
 # 1d Harmonic Oscillator
@@ -123,7 +121,9 @@ lemma ξ_abs : abs Q.ξ = Q.ξ := abs_of_nonneg Q.ξ_nonneg
 
 lemma one_over_ξ : 1/Q.ξ = √(Q.m * Q.ω / ℏ) := by
   have := ℏ_pos
-  field_simp [ξ]
+  simp only [ξ, one_div]
+  rw [← Real.sqrt_inv]
+  field_simp
 
 lemma ξ_inverse : Q.ξ⁻¹ = √(Q.m * Q.ω / ℏ) := by
   rw [inv_eq_one_div]
@@ -175,20 +175,21 @@ lemma schrodingerOperator_eq (ψ : ℝ → ℂ) :
 lemma schrodingerOperator_eq_ξ (ψ : ℝ → ℂ) : Q.schrodingerOperator ψ =
     fun x => (ℏ ^2 / (2 * Q.m)) * (- (deriv (deriv ψ) x) + (1/Q.ξ^2)^2 * x^2 * ψ x) := by
   funext x
-  simp [schrodingerOperator_eq, ξ_sq, ξ_inverse, ξ_ne_zero, ξ_pos, ξ_abs, ← Complex.ofReal_pow]
+  simp [schrodingerOperator_eq, ξ_sq, ← Complex.ofReal_pow]
   have := Complex.ofReal_ne_zero.mpr Q.m_ne_zero
   have := Complex.ofReal_ne_zero.mpr ℏ_ne_zero
   field_simp
+  simp only [Complex.ofReal_pow]
   ring
 
 /-- The Schrodinger operator commutes with the parity operator. -/
 lemma schrodingerOperator_parity (ψ : ℝ → ℂ) :
-    Q.schrodingerOperator (parity ψ) = parity (Q.schrodingerOperator ψ) := by
+    Q.schrodingerOperator (parityOperator ψ) = parityOperator (Q.schrodingerOperator ψ) := by
   funext x
   have (ψ : ℝ → ℂ) : (fun x => (deriv fun x => ψ (-x)) x) = fun x => - deriv ψ (-x) := by
     funext x
     rw [← deriv_comp_neg]
-  simp [schrodingerOperator, parity, this]
+  simp [schrodingerOperator, parityOperator, this]
 
 end HarmonicOscillator
 end OneDimension

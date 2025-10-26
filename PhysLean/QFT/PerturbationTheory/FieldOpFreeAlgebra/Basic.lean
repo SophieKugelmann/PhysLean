@@ -29,7 +29,7 @@ The key lemmas show how these operators interact, particularly focusing on the
 super commutation relations between creation and annihilation operators.
 
 -/
-
+open Module
 namespace FieldSpecification
 variable {𝓕 : FieldSpecification}
 
@@ -146,7 +146,7 @@ def crPartF : 𝓕.FieldOp → 𝓕.FieldOpFreeAlgebra := fun φ =>
   | FieldOp.outAsymp _ => 0
 
 @[simp]
-lemma crPartF_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma crPartF_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     crPartF (FieldOp.inAsymp φ) = ofCrAnOpF ⟨FieldOp.inAsymp φ, ()⟩ := by
   simp [crPartF]
 
@@ -157,7 +157,7 @@ lemma crPartF_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
   simp [crPartF]
 
 @[simp]
-lemma crPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma crPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     crPartF (FieldOp.outAsymp φ) = 0 := by
   simp [crPartF]
 
@@ -171,7 +171,7 @@ def anPartF : 𝓕.FieldOp → 𝓕.FieldOpFreeAlgebra := fun φ =>
   | FieldOp.outAsymp φ => ofCrAnOpF ⟨FieldOp.outAsymp φ, ()⟩
 
 @[simp]
-lemma anPartF_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma anPartF_negAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     anPartF (FieldOp.inAsymp φ) = 0 := by
   simp [anPartF]
 
@@ -182,7 +182,7 @@ lemma anPartF_position (φ : (Σ f, 𝓕.PositionLabel f) × SpaceTime) :
   simp [anPartF]
 
 @[simp]
-lemma anPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × (Fin 3 → ℝ)) :
+lemma anPartF_posAsymp (φ : (Σ f, 𝓕.AsymptoticLabel f) × Momentum) :
     anPartF (FieldOp.outAsymp φ) = ofCrAnOpF ⟨FieldOp.outAsymp φ, ()⟩ := by
   simp [anPartF]
 
@@ -208,8 +208,7 @@ noncomputable def ofCrAnListFBasis : Basis (List 𝓕.CrAnFieldOp) ℂ (FieldOpF
 lemma ofListBasis_eq_ofList (φs : List 𝓕.CrAnFieldOp) :
     ofCrAnListFBasis φs = ofCrAnListF φs := by
   simp only [ofCrAnListFBasis, FreeAlgebra.equivMonoidAlgebraFreeMonoid, MonoidAlgebra.of_apply,
-    Basis.coe_ofRepr, AlgEquiv.toLinearEquiv_symm, AlgEquiv.toLinearEquiv_apply,
-    AlgEquiv.ofAlgHom_symm_apply, ofCrAnListF]
+    Basis.coe_ofRepr, ofCrAnListF]
   erw [MonoidAlgebra.lift_apply]
   simp only [zero_smul, Finsupp.sum_single_index, one_smul]
   rw [@FreeMonoid.lift_apply]
@@ -241,7 +240,7 @@ noncomputable def mulLinearMap : FieldOpFreeAlgebra 𝓕 →ₗ[ℂ] FieldOpFree
   map_smul' := by
     intros
     ext c
-    simp [smul_mul']
+    simp
 
 lemma mulLinearMap_apply (a b : FieldOpFreeAlgebra 𝓕) :
     mulLinearMap a b = a * b := rfl

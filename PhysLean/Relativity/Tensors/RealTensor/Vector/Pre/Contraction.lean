@@ -82,12 +82,11 @@ def contrCoContract : Contr d ⊗ Co d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) wher
     rw [dotProduct_mulVec, LorentzGroup.transpose_val,
       vecMul_transpose, mulVec_mulVec, LorentzGroup.coe_inv, inv_mul_of_invertible M.1]
     simp only [one_mulVec, CategoryTheory.Equivalence.symm_inverse,
-      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      Action.tensorUnit_ρ, CategoryTheory.Category.comp_id, lift.tmul]
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
     rfl
 
 /-- Notation for `contrCoContract` acting on a tmul. -/
-scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => contrCoContract.hom (ψ ⊗ₜ φ)
+local notation "⟪" ψ "," φ "⟫ₘ" => contrCoContract.hom (ψ ⊗ₜ φ)
 
 lemma contrCoContract_hom_tmul (ψ : Contr d) (φ : Co d) : ⟪ψ, φ⟫ₘ = ψ.toFin1dℝ ⬝ᵥ φ.toFin1dℝ := by
   rfl
@@ -104,12 +103,11 @@ def coContrContract : Co d ⊗ Contr d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) wher
     rw [dotProduct_mulVec, LorentzGroup.transpose_val, mulVec_transpose, vecMul_vecMul,
       LorentzGroup.coe_inv, inv_mul_of_invertible M.1]
     simp only [vecMul_one, CategoryTheory.Equivalence.symm_inverse,
-      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj,
-      Action.tensorUnit_ρ, CategoryTheory.Category.comp_id, lift.tmul]
+      Action.functorCategoryEquivalence_functor, Action.FunctorCategoryEquivalence.functor_obj_obj]
     rfl
 
 /-- Notation for `coContrContract` acting on a tmul. -/
-scoped[Lorentz] notation "⟪" φ "," ψ "⟫ₘ" => coContrContract.hom (φ ⊗ₜ ψ)
+local notation "⟪" φ "," ψ "⟫ₘ" => coContrContract.hom (φ ⊗ₜ ψ)
 
 lemma coContrContract_hom_tmul (φ : Co d) (ψ : Contr d) : ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ ψ.toFin1dℝ := by
   rfl
@@ -145,7 +143,7 @@ def contrContrContractField : (Contr d).V ⊗[ℝ] (Contr d).V →ₗ[ℝ] ℝ :
   contrContrContract.hom.hom
 
 /-- Notation for `contrContrContractField` acting on a tmul. -/
-scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => contrContrContractField (ψ ⊗ₜ φ)
+local notation "⟪" ψ "," φ "⟫ₘ" => contrContrContractField (ψ ⊗ₜ φ)
 
 lemma contrContrContract_hom_tmul (φ : Contr d) (ψ : Contr d) :
     ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ η *ᵥ ψ.toFin1dℝ:= by
@@ -159,7 +157,7 @@ def coCoContract : Co d ⊗ Co d ⟶ 𝟙_ (Rep ℝ (LorentzGroup d)) :=
   (Co d ◁ Co.toContr d) ≫ coContrContract
 
 /-- Notation for `coCoContract` acting on a tmul. -/
-scoped[Lorentz] notation "⟪" ψ "," φ "⟫ₘ" => coCoContract.hom (ψ ⊗ₜ φ)
+local notation "⟪" ψ "," φ "⟫ₘ" => coCoContract.hom (ψ ⊗ₜ φ)
 
 lemma coCoContract_hom_tmul (φ : Co d) (ψ : Co d) :
     ⟪φ, ψ⟫ₘ = φ.toFin1dℝ ⬝ᵥ η *ᵥ ψ.toFin1dℝ:= by
@@ -316,7 +314,7 @@ lemma _root_.LorentzGroup.mem_iff_norm : Λ ∈ LorentzGroup d ↔
   have hn := h (x - y)
   rw [ContrMod.mulVec_add, tmul_add, add_tmul, add_tmul, tmul_add, add_tmul, add_tmul] at hp
   rw [ContrMod.mulVec_sub, tmul_sub, sub_tmul, sub_tmul, tmul_sub, sub_tmul, sub_tmul] at hn
-  simp only [map_add, LinearMap.add_apply, map_sub, LinearMap.sub_apply] at hp hn
+  simp only [map_add, map_sub] at hp hn
   rw [symm (Λ *ᵥ y) (Λ *ᵥ x), symm y x] at hp hn
   let e : 𝟙_ (Rep ℝ ↑(LorentzGroup d)) ≃ₗ[ℝ] ℝ :=
     LinearEquiv.refl ℝ ((𝟙_ (Rep ℝ ↑(LorentzGroup d))))
@@ -385,7 +383,7 @@ lemma basis_left {v : Contr d} (μ : Fin 1 ⊕ Fin d) :
 lemma on_basis_mulVec (μ ν : Fin 1 ⊕ Fin d) :
     ⟪ContrMod.stdBasis μ, Λ *ᵥ ContrMod.stdBasis ν⟫ₘ = η μ μ * Λ μ ν := by
   rw [basis_left, ContrMod.mulVec_toFin1dℝ]
-  simp [basis_left, mulVec, dotProduct, ContrMod.stdBasis_apply, ContrMod.toFin1dℝ_eq_val]
+  simp [mulVec, dotProduct, ContrMod.stdBasis_apply, ContrMod.toFin1dℝ_eq_val]
 
 lemma on_basis (μ ν : Fin 1 ⊕ Fin d) : ⟪ContrMod.stdBasis μ, ContrMod.stdBasis ν⟫ₘ = η μ ν := by
   trans ⟪ContrMod.stdBasis μ, 1 *ᵥ ContrMod.stdBasis ν⟫ₘ
@@ -410,14 +408,14 @@ lemma matrix_apply_stdBasis (ν μ : Fin 1 ⊕ Fin d) :
 lemma same_eq_det_toSelfAdjoint (x : ContrMod 3) :
     ⟪x, x⟫ₘ = det (ContrMod.toSelfAdjoint x).1 := by
   rw [ContrMod.toSelfAdjoint_apply_coe, as_sum_toSpace, det_fin_two,
-    PauliMatrix.σ1, PauliMatrix.σ2, PauliMatrix.σ3, ContrMod.toSpace,
+    PauliMatrix.pauliMatrix, PauliMatrix.pauliMatrix, PauliMatrix.pauliMatrix,
+    PauliMatrix.pauliMatrix, ContrMod.toSpace,
     ContrMod.toFin1dℝ_eq_val]
-  simp? [Fin.sum_univ_three] says
-    simp only [Fin.isValue, PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial,
-      Fin.sum_univ_three, ofReal_sub, ofReal_mul, ofReal_add, smul_of, smul_cons, smul_zero,
-      real_smul, mul_one, smul_empty, smul_neg, sub_apply, smul_apply, one_apply_eq, of_apply,
-      cons_val', cons_val_zero, cons_val_fin_one, sub_zero, cons_val_one, sub_neg_eq_add, ne_eq,
-      zero_ne_one, not_false_eq_true, one_apply_ne, zero_sub, one_ne_zero]
+  simp only [Fin.isValue, PiLp.inner_apply, Function.comp_apply, RCLike.inner_apply, conj_trivial,
+    Fin.sum_univ_three, ofReal_sub, ofReal_mul, ofReal_add, smul_of, smul_cons, smul_zero,
+    real_smul, mul_one, smul_empty, smul_neg, sub_apply, smul_apply, one_apply_eq, of_apply,
+    cons_val', cons_val_zero, cons_val_fin_one, sub_zero, cons_val_one, sub_neg_eq_add, ne_eq,
+    zero_ne_one, not_false_eq_true, one_apply_ne, zero_sub, one_ne_zero]
   ring_nf
   simp
 

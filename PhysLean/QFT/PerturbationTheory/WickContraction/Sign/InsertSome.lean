@@ -52,7 +52,7 @@ lemma stat_ofFinset_eq_one_of_gradingCompliant (φs : List 𝓕.FieldOp)
   split
   · split
     rw [hg x]
-    simp only [Fin.getElem_fin, mul_self]
+    simp only [mul_self]
     rename_i h1 h2
     have hsom' := hsom (φsΛ.sndFieldOfContract x) (by simp) h1
     simp only [sndFieldOfContract_getDual?, Option.get_some] at hsom'
@@ -402,9 +402,9 @@ lemma signInsertSomeProd_eq_finset (φ : 𝓕.FieldOp) (φs : List 𝓕.FieldOp)
       h, forall_true_left, true_and, Fin.getElem_fin]
     split
     · rename_i h1
-      simp [h1]
+      simp
     · rename_i h1
-      simp [h1]
+      simp
   · rename_i h
     simp [h]
   simp only [hφj, Fin.getElem_fin]
@@ -453,8 +453,7 @@ lemma stat_signFinset_insert_some_self_fst
     simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertAndContract_some_getDual?_self_eq,
       reduceCtorEq, Option.isSome_some, Option.get_some, forall_const, false_or, and_self,
       false_and, false_iff, not_exists, not_and, and_imp]
-    intro x hi hx
-    intro h
+    intro x hi hx h
     simp only [Fin.ext_iff, Fin.coe_cast]
     simp only [Fin.val_eq_val]
     exact Fin.succAbove_ne i x
@@ -530,8 +529,7 @@ lemma stat_signFinset_insert_some_self_snd (φ : 𝓕.FieldOp) (φs : List 𝓕.
     simp only [Nat.succ_eq_add_one, lt_self_iff_false, insertAndContract_some_getDual?_self_eq,
       reduceCtorEq, Option.isSome_some, Option.get_some, imp_false, not_true_eq_false, or_self,
       and_self, and_false, false_iff, not_exists, not_and, and_imp]
-    intro x hi hx
-    intro h
+    intro x hi hx h
     simp only [Fin.ext_iff, Fin.coe_cast]
     simp only [Fin.val_eq_val]
     exact Fin.succAbove_ne i x
@@ -819,7 +817,7 @@ lemma signInsertSome_mul_filter_contracted_of_not_lt (φ : 𝓕.FieldOp) (φs : 
       have hkn : i < i.succAbove j := by omega
       have hl : ¬ i.succAbove j < i := by omega
       simp only [hkn, hikn, false_and, and_false, hl, false_or, or_self, IsEmpty.forall_iff,
-        imp_false, not_lt, true_and, implies_true, imp_self, and_true, forall_const, hik,
+        imp_false, not_lt, true_and, implies_true, and_true, forall_const, hik,
         imp_forall_iff_forall]
     · have hikn : j < k.1 := by omega
       have hksucc : i.succAbove j < i.succAbove k.1 := Fin.succAbove_lt_succAbove_iff.mpr hikn

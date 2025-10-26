@@ -3,7 +3,6 @@ Copyright (c) 2024 Joseph Tooby-Smith. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Tooby-Smith
 -/
-import Mathlib.LinearAlgebra.TensorProduct.Matrix
 import PhysLean.Relativity.Tensors.ComplexTensor.Weyl.Basic
 /-!
 
@@ -14,7 +13,7 @@ import PhysLean.Relativity.Tensors.ComplexTensor.Weyl.Basic
 namespace Fermion
 noncomputable section
 
-open Matrix
+open Module Matrix
 open MatrixGroups
 open Complex
 open TensorProduct
@@ -716,7 +715,7 @@ lemma altLeftAltRightToMatrix_ρ_symm_selfAdjoint (v : Matrix (Fin 2) (Fin 2) �
   apply congrArg
   simp only [SL2C.toSelfAdjointMap_apply_coe, SpecialLinearGroup.coe_inv,
     SpecialLinearGroup.coe_transpose]
-  congr
+  congr 1
   · rw [SL2C.inverse_coe]
     simp only [SpecialLinearGroup.coe_inv]
     rw [@adjugate_transpose]

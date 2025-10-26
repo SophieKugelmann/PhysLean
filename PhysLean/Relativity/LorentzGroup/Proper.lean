@@ -5,6 +5,7 @@ Authors: Joseph Tooby-Smith
 -/
 import PhysLean.Relativity.LorentzGroup.Basic
 import Mathlib.Topology.Connected.PathConnected
+import Mathlib.Tactic.Cases
 /-!
 # The Proper Lorentz Group
 
@@ -39,7 +40,7 @@ instance : TopologicalSpace ℤ₂ := instTopologicalSpaceFin
 
 /-- The topological space defined by `ℤ₂` is discrete. -/
 instance : DiscreteTopology ℤ₂ := by
-  exact forall_open_iff_discrete.mp fun _ => trivial
+  exact discreteTopology_iff_forall_isOpen.mpr fun _ => trivial
 
 /-- The instance of a topological group on `ℤ₂` defined via the discrete topology. -/
 instance : IsTopologicalGroup ℤ₂ := IsTopologicalGroup.mk
@@ -64,7 +65,7 @@ def detContinuous : C(𝓛 d, ℤ₂) :=
 lemma detContinuous_eq_one (Λ : LorentzGroup d) :
     detContinuous Λ = Additive.toMul 0 ↔ Λ.1.det = 1 := by
   simp only [detContinuous, ContinuousMap.comp_apply, ContinuousMap.coe_mk, coeForℤ₂_apply,
-    Subtype.mk.injEq, ite_eq_left_iff, toMul_eq_one]
+    Subtype.mk.injEq]
   simp only [toMul_zero, ite_eq_left_iff, toMul_eq_one]
   refine Iff.intro (fun h => ?_) (fun h => ?_)
   · by_contra hn
@@ -176,19 +177,19 @@ instance : DecidablePred (@IsProper d) := by
   apply Real.decidableEq
 
 /-- The product of two proper Lorentz transformations is proper. -/
-lemma mul_isProper_of_isProper_isProper {Λ Λ' : LorentzGroup d}
+lemma isProper_mul {Λ Λ' : LorentzGroup d}
     (h : IsProper Λ) (h' : IsProper Λ') : IsProper (Λ * Λ') := by
   rw [IsProper, lorentzGroupIsGroup_mul_coe, det_mul, h, h', mul_one]
 
 /-- A Lorentz transformation is proper if its image under the det-representation
   `detRep` is `1`. -/
-lemma IsProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
+lemma isProper_iff (Λ : LorentzGroup d) : IsProper Λ ↔ detRep Λ = 1 := by
   rw [show 1 = detRep 1 from Eq.symm (MonoidHom.map_one detRep), detRep_apply, detRep_apply,
     detContinuous_eq_iff_det_eq]
   simp only [IsProper, lorentzGroupIsGroup_one_coe, det_one]
 
 /-- The identity Lorentz transformation is proper. -/
-lemma id_IsProper : @IsProper d 1 := by
+lemma isProper_id : @IsProper d 1 := by
   simp [IsProper]
 
 /-- If two Lorentz transformations are in the same connected component, and one is proper then
