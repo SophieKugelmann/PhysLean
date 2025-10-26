@@ -4,14 +4,16 @@ import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Logic.Function.Basic
 import Mathlib.Tactic.FinCases
+import Mathlib.Analysis.Calculus.Deriv.Pi
 
+-- for now Time is Tim cause the Definition was changed, have to adjust
+abbrev Tim := ℝ
 
-def path := Time → Space
+def path := Tim → Space
 
-noncomputable def velocity (r : path) : Time → Space := deriv r
+noncomputable def velocity (r : path) : Tim → (Fin 3 → ℝ) := fun t i => deriv (fun t => r t i) t
 
-noncomputable def acceleration (r : path) : Time → Space := fun t => deriv (deriv r) t
-
+noncomputable def acceleration (r : path) : Tim → (Fin 3 → ℝ) := fun t i => deriv (fun t => velocity r t i) t
 
 /-- The charged particle is specified by a mass `m`, a charge `q`.
   The mass is assumed to be positive. -/
@@ -63,8 +65,9 @@ structure ChargedParticleInEM_restriction extends ChargedParticleInEM where
 namespace ChargedParticleInEM_restriction
 
 /-- Given the ChargedParticleInEM_restrcition and initial conditions, the solution to the equation of motion. -/
-noncomputable def sol (EMS : ChargedParticleInEM_restriction)(IC: InitialConditions) : path := fun t =>
+noncomputable def sol (EMS : ChargedParticleInEM_restriction)(IC: InitialConditions) : path :=
   let d := EMS.p.m*c/(EMS.p.q*EMS.b)
+  fun t =>
   ![d*(IC.v₀ 0)*(sin d⁻¹*t)-d*(IC.v₀ 1)*(cos d⁻¹*t)+(IC.r₀ 0)+d*(IC.v₀ 1),
     d*(IC.v₀ 0)*(cos d⁻¹*t)+d*(IC.v₀ 1)*(sin d⁻¹*t)+(IC.r₀ 1)+d*(IC.v₀ 0),
     IC.r₀ 2]
@@ -85,14 +88,6 @@ EMS.p.q • (1/c) • EMS.b •![velocity r t 1, (-1) * (velocity r t 0), 0] ) :
     simp
     exact h
 
-lemma comp_0 (EMS : ChargedParticleInEM_restriction)(IC : InitialConditions) (t : Time) :
-(EMS.p.m * deriv (deriv (EMS.sol IC)) t 0 = EMS.p.q * (1 / c) • (EMS.b * deriv (EMS.sol IC) t 1)):= by sorry
-
-lemma comp_1 (EMS : ChargedParticleInEM_restriction)(IC : InitialConditions) (t : Time) :
-(EMS.p.m * deriv (deriv (EMS.sol IC)) t 1 = EMS.p.q * (1 / c) • (EMS.b * (-1 * deriv (EMS.sol IC) t 0))):= sorry
-
-lemma comp_2 (EMS : ChargedParticleInEM_restriction)(IC : InitialConditions) (t : Time) :
-(EMS.p.m * deriv (deriv (EMS.sol IC)) t 2 = EMS.p.q * (1 / c) • (EMS.b * 0)):= sorry
 
 lemma solution_true (EMS : ChargedParticleInEM_restriction) (IC : InitialConditions) : (EquationOfMotion EMS.toChargedParticleInEM (sol EMS IC)):= by
   rw [EquationOfMotion_simp EMS (sol EMS IC)]
@@ -100,12 +95,15 @@ lemma solution_true (EMS : ChargedParticleInEM_restriction) (IC : InitialConditi
   apply funext
   intro i
   fin_cases i
-  · dsimp [acceleration, velocity]
-    apply comp_0 EMS IC
-  · dsimp [acceleration, velocity, sol]
-    apply comp_1 EMS IC
-  · dsimp [acceleration, velocity, sol]
-    apply comp_2 EMS IC
+  · set d := EMS.p.m*c/(EMS.p.q*EMS.b) with hd
+    dsimp [acceleration, velocity]
+    unfold sol
+    simp
+    rw [← hd]
+    sorry
+
+  · sorry
+  · sorry
 
 -- lemma satisfies_IC (EMS : ChargedParticleInEM_restriction) (IC : InitialConditions) : (EMS.sol IC 0 = IC.r₀ ∧ deriv EMS.sol IC 0 = IC.v₀):= by sorry
 
